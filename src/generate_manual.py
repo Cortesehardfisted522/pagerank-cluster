@@ -981,6 +981,7 @@ HTML = (
     '    <a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>\n'
     '    <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>\n'
     '    <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>\n'
+    '    <a class="toc-link" href="#s3-4">3.4 Query a Specific Node</a>\n'
     '    <a class="toc-link" href="#s3-5">3.5 Top N Nodes</a>\n'
     '    <a class="toc-link" href="#s3-6">3.6 Outgoing Edges (Neighbors)</a>\n'
     '    <a class="toc-link" href="#s3-7">3.7 Incoming Edges (Influencers)</a>\n'
