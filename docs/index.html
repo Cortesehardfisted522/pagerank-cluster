@@ -212,7 +212,7 @@ footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border);
 <main class="main">
 <div class="cover">
   <div class="cover-inner">
-    <div class="cover-badge">GROUP 03 &middot; SECTION H3</div>
+    <div class="cover-badge">GROUP 03 &middot; CSCS2543 &middot; Section H3</div>
     <h1>Network Graph<br>PageRank Cluster</h1>
     <div class="cover-sub">Setup &amp; Portability Manual &mdash; May 10, 2026</div>
     <div class="cover-chips">
@@ -500,7 +500,7 @@ curl -X POST http://192.168.1.14:5000/rerun \
 
 // failed
 {"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Dataset swap requires a SNAP URL</strong><p>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from <code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS so it is available to all cluster nodes.</p></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>The API stays responsive during a rerun</strong><p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> results until the new job completes. When the job finishes, the API updates all result files and future queries return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p></div></div></section><section id="s3-10"><h3><span class="sec-num">3.10</span>If Something Fails</h3><h4>API unreachable (connection refused / timeout)</h4><p>Step 1: confirm basic network connectivity first.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div><p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p><h4>503 response &mdash; results not ready</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p></div></div><h4>404 on a node ID</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour &mdash; it does not indicate a bug.</p></div></div></section></div>
-<footer>Group 03 &mdash; Section H3 &mdash; May 10, 2026</footer>
+<footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; May 10, 2026</footer>
 </main>
 </div>
 <script>

@@ -996,7 +996,7 @@ HTML = (
     # Cover
     '<div class="cover">\n'
     '  <div class="cover-inner">\n'
-    '    <div class="cover-badge">GROUP 03 &middot; SECTION H3</div>\n'
+    '    <div class="cover-badge">GROUP 03 &middot; CSCS2543 &middot; Section H3</div>\n'
     '    <h1>Network Graph<br>PageRank Cluster</h1>\n'
     '    <div class="cover-sub">Setup &amp; Portability Manual &mdash; ' + today + '</div>\n'
     '    <div class="cover-chips">\n'
@@ -1024,7 +1024,7 @@ HTML = (
     + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9 + p3_s10
 
     + '</div>\n'  # /content
-    '<footer>Group 03 &mdash; Section H3 &mdash; ' + today + '</footer>\n'
+    '<footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; ' + today + '</footer>\n'
     '</main>\n'
     '</div>\n'  # /layout
     '<script>\n' + JS + '\n</script>\n'
