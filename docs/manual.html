@@ -745,12 +745,9 @@ netsh advfirewall firewall add rule name="HDFS" dir=in action=allow protocol=TCP
 netsh advfirewall firewall add rule name="SparkMaster" dir=in action=allow protocol=TCP localport=7077</code></pre></div></div>
 </div>
 </section>
-<section id="s1-6"><h3><span class="sec-num">1.6</span>Load the Dataset</h3>
-<p>The dataset is the Stanford Web-Google graph — a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p>
-
+<section id="s1-6"><h3><span class="sec-num">1.6</span>Load the Dataset</h3><p>The dataset is the Stanford Web-Google graph — a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p>
 <h4>Step 1 — Download</h4>
-<div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/download_dataset.py</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
+<div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/download_dataset.py</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
   [####################] 100%
 Extracting...
 
@@ -758,17 +755,11 @@ Extracting...
   Nodes: 875,713
   Edges: 5,105,039
 
-Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div>
-
-<h4>Step 2 — Push to HDFS</h4>
+Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div><h4>Step 2 — Push to HDFS</h4>
 <p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p>
-<div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/
+<div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/
 
--rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre></div></div>
-
-<div class="callout callout-tip"><span class="callout-icon">💡</span><div><strong>Already in HDFS?</strong><p>If you re-run, use <code>hdfs dfs -put -f</code> (force overwrite) to replace an existing file.</p></div></div>
-</section>
+-rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre></div></div><div class="callout callout-tip"><span class="callout-icon">💡</span><div><strong>Already in HDFS?</strong><p>If you re-run, use <code>hdfs dfs -put -f</code> (force overwrite) to replace an existing file.</p></div></div></section>
 <section id="s1-7"><h3><span class="sec-num">1.7</span>Run PageRank</h3>
 <p>This submits the PageRank job to Spark. <code>spark-submit</code> packages your Python script and sends it to the Spark Master, which distributes the computation across all connected workers.</p>
 

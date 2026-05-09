@@ -195,28 +195,28 @@ p1_s5 = section("s1-5", "1.5", "Verify in Browser", f"""
 )}
 """)
 
-p1_s6 = section("s1-6", "1.6", "Load the Dataset", f"""
-<p>The dataset is the Stanford Web-Google graph — a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p>
+_dl_expected = expected("Expected output", "<pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...\n"
+    "  [####################] 100%\n"
+    "Extracting...\n\n"
+    "[ok] Ready: data/web-Google.txt\n"
+    "  Nodes: 875,713\n"
+    "  Edges: 5,105,039\n\n"
+    "Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre>")
 
-<h4>Step 1 — Download</h4>
-{cb("python3 src/download_dataset.py", "bash")}
-{expected("Expected output", """<pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
-  [####################] 100%
-Extracting...
-
-[ok] Ready: data/web-Google.txt
-  Nodes: 875,713
-  Edges: 5,105,039
-
-Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre>""")}
-
-<h4>Step 2 — Push to HDFS</h4>
-<p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p>
-{cb("hdfs dfs -put data/web-Google.txt /pagerank/input/", "bash")}
-{expected("Expected output", "<p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/\n\n-rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre>")}
-
-{tip("Already in HDFS?", "<p>If you re-run, use <code>hdfs dfs -put -f</code> (force overwrite) to replace an existing file.</p>")}
-""")
+p1_s6 = section("s1-6", "1.6", "Load the Dataset",
+"<p>The dataset is the Stanford Web-Google graph — a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, "
+"collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p>\n"
+"<h4>Step 1 — Download</h4>\n"
++ cb("python3 src/download_dataset.py", "bash")
++ _dl_expected
++ "<h4>Step 2 — Push to HDFS</h4>\n"
+"<p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p>\n"
++ cb("hdfs dfs -put data/web-Google.txt /pagerank/input/", "bash")
++ expected("Expected output", "<p>No output means success. Verify the file landed:</p>"
+    "<pre>hdfs dfs -ls /pagerank/input/\n\n"
+    "-rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre>")
++ tip("Already in HDFS?", "<p>If you re-run, use <code>hdfs dfs -put -f</code> (force overwrite) to replace an existing file.</p>")
+)
 
 p1_s7 = section("s1-7", "1.7", "Run PageRank", f"""
 <p>This submits the PageRank job to Spark. <code>spark-submit</code> packages your Python script and sends it to the Spark Master, which distributes the computation across all connected workers.</p>
