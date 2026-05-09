@@ -148,7 +148,7 @@ Generate the full HTML manual (three-part: master setup, worker setup, portabili
 ```bash
 python3 src/generate_manual.py
 python3 -m http.server 8888 --directory docs
-# Open: http://localhost:8888/manual.html
+# Open: http://localhost:8888/
 ```
 
 ---

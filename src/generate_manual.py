@@ -1012,9 +1012,9 @@ HTML = (
     '</html>\n'
 )
 
-out = DOCS_DIR / "manual.html"
-out.write_text(HTML, encoding="utf-8")
-print("✓ Manual generated: " + str(out))
-print("  Size: " + "{:.1f}".format(out.stat().st_size / 1024) + " KB")
+OUT = DOCS_DIR / "index.html"
+OUT.write_text(HTML, encoding="utf-8")
+print("✓ Manual generated: " + str(OUT))
+print("  Size: " + "{:.1f}".format(OUT.stat().st_size / 1024) + " KB")
 print("  Preview: python3 -m http.server 8888 --directory docs")
-print("  Open:    http://localhost:8888/manual.html")
+print("  Open:    http://localhost:8888/")
