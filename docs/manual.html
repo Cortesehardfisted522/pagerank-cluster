@@ -589,7 +589,7 @@ footer {
 
 <div class="content">
 
-<!-- ═══════════════════ PART 1 ═══════════════════ -->
+<!-- =================== PART 1 =================== -->
 <div class="part-divider" id="part1">
   <div class="part-label">Part 1</div>
   <div class="part-title">Master Setup</div>
@@ -601,11 +601,11 @@ footer {
 
 <h4>Python 3.8+</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 --version</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><p><code>Python 3.10.12</code> (or any 3.8+). If you see <em>command not found</em>, install Python from <code>python.org</code>.</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p><code>Python 3.10.12</code> (or any 3.8+). If you see <em>command not found</em>, install Python from <code>python.org</code>.</p></div></div>
 
 <h4>Java 11</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">java -version</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><p><code>openjdk version &quot;11.0.22&quot; 2024-01-16</code> — the word <em>11</em> must appear. Java 17 also works.</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p><code>openjdk version &quot;11.0.22&quot; 2024-01-16</code> — the word <em>11</em> must appear. Java 17 also works.</p></div></div>
 
 <p>If Java is missing, install it now:</p>
 <div class="os-tabs">
@@ -627,7 +627,7 @@ sudo apt-get install -y openjdk-11-jdk</code></pre></div></div>
 
 <h4>Git</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">git --version</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><p><code>git version 2.x.x</code>. If missing, install via <code>brew install git</code> (macOS), <code>sudo apt install git</code> (Linux), or from <code>git-scm.com</code> (Windows).</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p><code>git version 2.x.x</code>. If missing, install via <code>brew install git</code> (macOS), <code>sudo apt install git</code> (Linux), or from <code>git-scm.com</code> (Windows).</p></div></div>
 </section>
 <section id="s1-2"><h3><span class="sec-num">1.2</span>Find Your LAN IP</h3>
 <p>Your LAN IP is the address other machines on the same Wi-Fi will use to reach yours. It usually starts with <code>192.168.</code> or <code>10.</code>.</p>
@@ -663,13 +663,13 @@ sudo apt-get install -y openjdk-11-jdk</code></pre></div></div>
 
 <p>Verify the config loads cleanly:</p>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/config.py</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><pre>OS          : Darwin
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>OS          : Darwin
 Local IP    : 192.168.1.42
 MASTER_IP   : 192.168.1.42
 JAVA_HOME   : /opt/homebrew/opt/openjdk@11
 HADOOP_HOME : /opt/homebrew/Cellar/hadoop/3.5.0/libexec
 SPARK_HOME  : /opt/spark-3.5.1
-  ✓ Java: openjdk version "11.0.22" 2024-01-16</pre></div></div>
+  [ok] Java: openjdk version "11.0.22" 2024-01-16</pre></div></div>
 </section>
 <section id="s1-4"><h3><span class="sec-num">1.4</span>Run Master Setup</h3>
 <p>This single command installs Hadoop (a distributed filesystem) and Spark (a distributed computation engine), formats the filesystem, and starts all required services.</p>
@@ -695,7 +695,7 @@ SPARK_HOME  : /opt/spark-3.5.1
 <h4>After it finishes: check with <code>jps</code></h4>
 <p><code>jps</code> — the Java Virtual Machine Process Status tool — lists every running Java process. After master setup you should see exactly four:</p>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output — all four must appear</strong><pre>12345 NameNode
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output — all four must appear</strong><pre>12345 NameNode
 12346 DataNode
 12347 SecondaryNameNode
 12348 Master
@@ -750,11 +750,11 @@ netsh advfirewall firewall add rule name="SparkMaster" dir=in action=allow proto
 
 <h4>Step 1 — Download</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/download_dataset.py</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
-  [████████████████████] 100%
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
+  [####################] 100%
 Extracting...
 
-✓ Ready: data/web-Google.txt
+[ok] Ready: data/web-Google.txt
   Nodes: 875,713
   Edges: 5,105,039
 
@@ -763,7 +763,7 @@ Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div>
 <h4>Step 2 — Push to HDFS</h4>
 <p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/
 
 -rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre></div></div>
 
@@ -779,7 +779,7 @@ Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div>
   src/pagerank.py 10</code></pre></div>
 
 <p>The number <code>10</code> is the iteration count. During the run you will see lines like:</p>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Iteration output</strong><pre>  Iteration  1/10  12.3s
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Iteration output</strong><pre>  Iteration  1/10  12.3s
   Iteration  2/10  11.8s
   Iteration  3/10  11.5s
   ...
@@ -787,17 +787,17 @@ Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div>
 
 Collecting results...
 
-═══════════════════════════════════════════════════════
+=======================================================
   TOP 5 MOST INFLUENTIAL NODES
-═══════════════════════════════════════════════════════
+=======================================================
   #1  node      41909  →  445.71778597
   #2  node     597621  →  406.62836675
   #3  node     504140  →  399.08930875
   #4  node     384666  →  392.82584373
   #5  node     537039  →  383.90912550
-═══════════════════════════════════════════════════════
+=======================================================
 
-✓ Done in 118.4s</pre></div></div>
+[ok] Done in 118.4s</pre></div></div>
 
 <p>Each iteration line shows the wall-clock time for one pass over the graph. Times should be roughly stable; a sudden spike usually means a worker disconnected.</p>
 
@@ -816,7 +816,7 @@ Collecting results...
 
 <h4>Verify locally first</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/api.py</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected startup output</strong><pre>══════════════════════════════════════════════════
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected startup output</strong><pre>==================================================
   Group 03 · PageRank Portability API
   http://192.168.1.14:5000
 
@@ -824,8 +824,8 @@ Collecting results...
   GET /node/&lt;id&gt;     → score for node id
   GET /health        → status check
 
-  ✓ Results loaded — top node: 41909 (445.71778597)
-══════════════════════════════════════════════════</pre></div></div>
+  [ok] Results loaded — top node: 41909 (445.71778597)
+==================================================</pre></div></div>
 
 <p>In a second terminal, confirm it responds:</p>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://localhost:5000/health</code></pre></div>
@@ -864,7 +864,7 @@ python3 -c "import urllib.request, json; print(json.loads(urllib.request.urlopen
 <div class="callout callout-tip"><span class="callout-icon">💡</span><div><strong>macOS port 5000 conflict</strong><p>macOS Monterey+ reserves port 5000 for AirPlay Receiver. If <code>curl</code> returns <em>connection refused</em>, go to <strong>System Settings → AirDrop &amp; Handoff</strong> and turn off AirPlay Receiver. Then restart the API.</p></div></div>
 </section>
 
-<!-- ═══════════════════ PART 2 ═══════════════════ -->
+<!-- =================== PART 2 =================== -->
 <div class="part-divider" id="part2">
   <div class="part-label">Part 2</div>
   <div class="part-title">Worker Setup</div>
@@ -901,7 +901,7 @@ cd pagerank-cluster</code></pre></div>
 
 <h4>After it finishes: check with <code>jps</code></h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output on the worker — exactly these two</strong><pre>23456 DataNode
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output on the worker — exactly these two</strong><pre>23456 DataNode
 23457 Worker
 23458 Jps</pre><p>You should <strong>not</strong> see <code>NameNode</code> or <code>Master</code> on a worker — those only run on the master machine.</p></div></div>
 </section>
@@ -927,12 +927,12 @@ python3 setup/register_worker.py 192.168.1.55</code></pre></div>
 
 <h4>Step 3 — Verify from the master</h4>
 <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfsadmin -report | grep 'Live datanodes'</code></pre></div>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected output</strong><p><code>Live datanodes (2):</code> — the count increases by 1 each time a worker is registered. If you have 1 worker plus the master's own DataNode, you'll see 2.</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p><code>Live datanodes (2):</code> — the count increases by 1 each time a worker is registered. If you have 1 worker plus the master's own DataNode, you'll see 2.</p></div></div>
 </section>
 <section id="s2-5"><h3><span class="sec-num">2.5</span>Most Common Failures</h3>
 <h4>Failure 1 — <code>MASTER_IP</code> mismatch</h4>
 <p>The worker starts but never appears in the Spark UI or HDFS report.</p>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>What the error looks like in Spark Worker logs</strong><pre>ERROR Worker: All masters are unresponsive! Giving up.
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>What the error looks like in Spark Worker logs</strong><pre>ERROR Worker: All masters are unresponsive! Giving up.
 ERROR Worker: Connection to spark://192.168.1.99:7077 failed</pre></div></div>
 <p><strong>Fix:</strong> Open <code>setup/config.py</code> on the <em>worker</em> machine and correct <code>MASTER_IP</code> to the master's actual LAN IP. Then re-run worker setup.</p>
 
@@ -958,7 +958,7 @@ netsh advfirewall firewall add rule name="Hadoop-Spark" dir=in action=allow prot
 </div>
 </section>
 
-<!-- ═══════════════════ PART 3 ═══════════════════ -->
+<!-- =================== PART 3 =================== -->
 <div class="part-divider" id="part3">
   <div class="part-label">Part 3</div>
   <div class="part-title">Portability Test</div>
@@ -979,7 +979,7 @@ python3 -c "import urllib.request, json; print(json.dumps(json.loads(urllib.requ
 # Browser
 # http://192.168.1.14:5000/health</code></pre></div>
 
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Healthy response</strong><pre>{
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Healthy response</strong><pre>{
   "dataset": "Stanford Web-Google",
   "framework": "Apache Spark",
   "group": "03",
@@ -1007,7 +1007,7 @@ for n in data:
 # Browser
 # http://192.168.1.14:5000/top5</code></pre></div>
 
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected JSON response</strong><pre>[
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected JSON response</strong><pre>[
   {
     "rank": 1,
     "nodeId": "41909",
@@ -1050,7 +1050,7 @@ data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/node/41909').
 print(json.dumps(data, indent=2))
 "</code></pre></div>
 
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>Expected response</strong><pre>{
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected response</strong><pre>{
   "nodeId": "41909",
   "pagerank": 445.71778597
 }</pre></div></div>
@@ -1062,10 +1062,10 @@ print(json.dumps(data, indent=2))
 <p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p>
 
 <h4>503 response — results not ready</h4>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately — the job takes approximately 2 minutes to complete.</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately — the job takes approximately 2 minutes to complete.</p></div></div>
 
 <h4>404 on a node ID</h4>
-<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour — it does not indicate a bug.</p></div></div>
+<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour — it does not indicate a bug.</p></div></div>
 </section>
 
 </div><!-- /content -->

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 generate_manual.py — Produces docs/manual.html
 Three-part setup manual for Group 03: Network Graph PageRank.
@@ -56,7 +57,7 @@ def tip(title: str, body: str) -> str:
     return f'<div class="callout callout-tip"><span class="callout-icon">💡</span><div><strong>{title}</strong>{body}</div></div>'
 
 def expected(title: str, body: str) -> str:
-    return f'<div class="callout callout-ok"><span class="callout-icon">✓</span><div><strong>{title}</strong>{body}</div></div>'
+    return f'<div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>{title}</strong>{body}</div></div>'
 
 def section(id_: str, num: str, title: str, body: str) -> str:
     return f'<section id="{id_}"><h3><span class="sec-num">{num}</span>{title}</h3>{body}</section>'
@@ -80,9 +81,9 @@ if top5:
 else:
     top5_table = '<p class="muted">Run <code>src/pagerank.py</code> first to populate results.</p>'
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 # PART 1 CONTENT
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 
 p1_s1 = section("s1-1", "1.1", "Prerequisites", f"""
 <p>Before running anything, verify these three tools are installed. Every command below must succeed.</p>
@@ -131,7 +132,7 @@ p1_s3 = section("s1-3", "1.3", "Configure", f"""
 
 <p>Verify the config loads cleanly:</p>
 {cb("python3 setup/config.py", "bash")}
-{expected("Expected output", f"<pre>OS          : Darwin\nLocal IP    : 192.168.1.42\nMASTER_IP   : 192.168.1.42\nJAVA_HOME   : /opt/homebrew/opt/openjdk@11\nHADOOP_HOME : /opt/homebrew/Cellar/hadoop/3.5.0/libexec\nSPARK_HOME  : /opt/spark-3.5.1\n  ✓ Java: openjdk version \"11.0.22\" 2024-01-16</pre>")}
+{expected("Expected output", f"<pre>OS          : Darwin\nLocal IP    : 192.168.1.42\nMASTER_IP   : 192.168.1.42\nJAVA_HOME   : /opt/homebrew/opt/openjdk@11\nHADOOP_HOME : /opt/homebrew/Cellar/hadoop/3.5.0/libexec\nSPARK_HOME  : /opt/spark-3.5.1\n  [ok] Java: openjdk version \"11.0.22\" 2024-01-16</pre>")}
 """)
 
 p1_s4 = section("s1-4", "1.4", "Run Master Setup", f"""
@@ -200,10 +201,10 @@ p1_s6 = section("s1-6", "1.6", "Load the Dataset", f"""
 <h4>Step 1 — Download</h4>
 {cb("python3 src/download_dataset.py", "bash")}
 {expected("Expected output", """<pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
-  [████████████████████] 100%
+  [####################] 100%
 Extracting...
 
-✓ Ready: data/web-Google.txt
+[ok] Ready: data/web-Google.txt
   Nodes: 875,713
   Edges: 5,105,039
 
@@ -231,17 +232,17 @@ p1_s7 = section("s1-7", "1.7", "Run PageRank", f"""
 
 Collecting results...
 
-═══════════════════════════════════════════════════════
+=======================================================
   TOP 5 MOST INFLUENTIAL NODES
-═══════════════════════════════════════════════════════
+=======================================================
   #1  node      41909  →  445.71778597
   #2  node     597621  →  406.62836675
   #3  node     504140  →  399.08930875
   #4  node     384666  →  392.82584373
   #5  node     537039  →  383.90912550
-═══════════════════════════════════════════════════════
+=======================================================
 
-✓ Done in 118.4s</pre>""")}
+[ok] Done in 118.4s</pre>""")}
 
 <p>Each iteration line shows the wall-clock time for one pass over the graph. Times should be roughly stable; a sudden spike usually means a worker disconnected.</p>
 
@@ -261,7 +262,7 @@ p1_s8 = section("s1-8", "1.8", "Start the API", f"""
 
 <h4>Verify locally first</h4>
 {cb("python3 src/api.py", "bash")}
-{expected("Expected startup output", f"""<pre>══════════════════════════════════════════════════
+{expected("Expected startup output", f"""<pre>==================================================
   Group 03 · PageRank Portability API
   http://{master_ip}:5000
 
@@ -269,8 +270,8 @@ p1_s8 = section("s1-8", "1.8", "Start the API", f"""
   GET /node/&lt;id&gt;     → score for node id
   GET /health        → status check
 
-  ✓ Results loaded — top node: 41909 (445.71778597)
-══════════════════════════════════════════════════</pre>""")}
+  [ok] Results loaded — top node: 41909 (445.71778597)
+==================================================</pre>""")}
 
 <p>In a second terminal, confirm it responds:</p>
 {cb(f"curl http://localhost:5000/health", "bash")}
@@ -288,9 +289,9 @@ p1_s8 = section("s1-8", "1.8", "Start the API", f"""
 {tip("macOS port 5000 conflict", "<p>macOS Monterey+ reserves port 5000 for AirPlay Receiver. If <code>curl</code> returns <em>connection refused</em>, go to <strong>System Settings → AirDrop &amp; Handoff</strong> and turn off AirPlay Receiver. Then restart the API.</p>")}
 """)
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 # PART 2 CONTENT
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 
 p2_s1 = section("s2-1", "2.1", "Before You Start", f"""
 <p>The master node must be fully running before you set up any worker. Specifically:</p>
@@ -361,9 +362,9 @@ ERROR Worker: Connection to spark://192.168.1.99:7077 failed</pre>""")}
 )}
 """)
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 # PART 3 CONTENT
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 
 p3_intro = f"""<p>The portability test checks that your group's API can be queried by a <em>different</em> group's machine — confirming the result is not just local but genuinely accessible over the LAN. You are querying the Group 03 master node for the top-5 most influential pages in the Stanford Web-Google graph, as computed by our distributed PageRank job. The three endpoints below must all return valid JSON.</p>"""
 
@@ -435,9 +436,9 @@ p3_s4 = section("s3-4", "3.4", "If Something Fails", f"""
 {expected("404 response body", '<pre>{"error": "Node \'999999\' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour — it does not indicate a bug.</p>')}
 """)
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 # HTML DOCUMENT
-# ══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 
 HTML = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1030,7 +1031,7 @@ footer {{
 
 <div class="content">
 
-<!-- ═══════════════════ PART 1 ═══════════════════ -->
+<!-- =================== PART 1 =================== -->
 {part_divider(1, "Master Setup")}
 <p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Run these steps on the one machine that will act as the cluster coordinator — the <strong>master node</strong>. Other team members should skip to Part 2.</p>
 
@@ -1043,7 +1044,7 @@ footer {{
 {p1_s7}
 {p1_s8}
 
-<!-- ═══════════════════ PART 2 ═══════════════════ -->
+<!-- =================== PART 2 =================== -->
 {part_divider(2, "Worker Setup")}
 <p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.</p>
 
@@ -1053,7 +1054,7 @@ footer {{
 {p2_s4}
 {p2_s5}
 
-<!-- ═══════════════════ PART 3 ═══════════════════ -->
+<!-- =================== PART 3 =================== -->
 {part_divider(3, "Portability Test")}
 <p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>
 
