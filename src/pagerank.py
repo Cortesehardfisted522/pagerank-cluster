@@ -14,6 +14,7 @@ import sys
 import json
 import time
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pyspark import SparkContext, SparkConf
@@ -27,6 +28,7 @@ OUTPUT_HDFS    = "hdfs:///pagerank/output"
 OUTPUT_LOCAL   = Path(__file__).parent.parent / "data" / "pagerank_output"
 DATA_DIR       = Path(__file__).parent.parent / "data"
 TOP_N          = 5
+DATASET_NAME   = "web-Google.txt"
 # Checkpoint every N iterations to truncate RDD lineage (prevents stack overflow on long runs)
 CHECKPOINT_EVERY = 5
 
@@ -67,6 +69,12 @@ print(f"  {len(edge_pairs):,} edges loaded")
 
 # Create Spark RDD from in-memory list
 edges = sc.parallelize(edge_pairs)
+edges.cache()
+total_edges = edges.count()
+
+# Compute total unique nodes (source + destination)
+all_nodes = edges.flatMap(lambda e: [e[0], e[1]]).distinct()
+total_nodes = all_nodes.count()
 
 # Adjacency list: {src_node: [dst_node, ...]}
 links = edges.groupByKey().mapValues(list)
@@ -135,6 +143,27 @@ with open(DATA_DIR / "top5.json", "w") as f:
 
 with open(DATA_DIR / "results.json", "w") as f:
     json.dump([{"nodeId": n, "pagerank": round(s, 8)} for n, s in all_ranks[:1000]], f, indent=2)
+
+# ── Save graph.json ────────────────────────────────────────────────────────────
+print("Saving graph adjacency list...")
+graph_data = links.collectAsMap()
+graph_json = {str(k): [str(v) for v in vs] for k, vs in graph_data.items()}
+with open(DATA_DIR / "graph.json", "w") as f:
+    json.dump(graph_json, f)
+
+# ── Save meta.json ────────────────────────────────────────────────────────────
+top_node = all_ranks[0][0]
+meta = {
+    "dataset_name": DATASET_NAME,
+    "total_nodes": total_nodes,
+    "total_edges": total_edges,
+    "iterations": ITERATIONS,
+    "damping_factor": DAMPING,
+    "top_node": str(top_node),
+    "completed_at": datetime.now(timezone.utc).isoformat(),
+}
+with open(DATA_DIR / "meta.json", "w") as f:
+    json.dump(meta, f, indent=2)
 
 # Write output to local file using Python (avoids Java 25 Hadoop UGI compatibility issue)
 output_file = OUTPUT_LOCAL / "part-00000"
