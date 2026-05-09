@@ -491,28 +491,7 @@ p3_s3 = section("s3-3", "3.3", "Query a Specific Node",
     )
 )
 
-p3_s4 = section("s3-4", "3.4", "Query a Specific Node",
-    "<p><code>GET /node/&lt;id&gt;</code> returns the score for one node. Use the top-ranked node's ID as your test case.</p>"
-    + cb(
-        "# curl -- query the top node\n"
-        "curl http://" + master_ip + ":5000/node/" + top_node + "\n\n"
-        "# Python\n"
-        "python3 -c \"\n"
-        "import urllib.request, json\n"
-        "data = json.loads(urllib.request.urlopen('http://" + master_ip + ":5000/node/" + top_node + "').read())\n"
-        "print(json.dumps(data, indent=2))\n"
-        "\"",
-        "bash"
-    )
-    + ok("Expected response",
-        '<pre>{\n'
-        '  "nodeId": "' + top_node + '",\n'
-        '  "pagerank": ' + top_score + '\n'
-        '}</pre>'
-    )
-)
-
-p3_s5 = section("s3-5", "3.5", "Top N Nodes",
+p3_s5 = section("s3-4", "3.4", "Top N Nodes",
     "<p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p>"
     + cb(
         "# Get top 10 nodes\n"
@@ -539,7 +518,7 @@ p3_s5 = section("s3-5", "3.5", "Top N Nodes",
     "</ul>"
 )
 
-p3_s6 = section("s3-6", "3.6", "Outgoing Edges (Neighbors)",
+p3_s6 = section("s3-5", "3.5", "Outgoing Edges (Neighbors)",
     "<p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p>"
     + cb(
         "# Get all outgoing neighbors of the top-ranked node\n"
@@ -566,7 +545,7 @@ p3_s6 = section("s3-6", "3.6", "Outgoing Edges (Neighbors)",
     "This is expected behaviour &mdash; sink nodes exist in the graph but have no entries in the adjacency list.</p>"
 )
 
-p3_s7 = section("s3-7", "3.7", "Incoming Edges (Influencers)",
+p3_s7 = section("s3-6", "3.6", "Incoming Edges (Influencers)",
     "<p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). "
     "This is computed on first request by building a reverse-index from <code>data/graph.json</code>, "
     "then cached in memory for all subsequent calls &mdash; it does not rebuild on every request.</p>"
@@ -591,7 +570,7 @@ p3_s7 = section("s3-7", "3.7", "Incoming Edges (Influencers)",
     )
 )
 
-p3_s8 = section("s3-8", "3.8", "Job Statistics",
+p3_s8 = section("s3-7", "3.7", "Job Statistics",
     "<p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p>"
     + cb(
         "curl http://" + master_ip + ":5000/stats\n\n"
@@ -617,7 +596,7 @@ p3_s8 = section("s3-8", "3.8", "Job Statistics",
     )
 )
 
-p3_s9 = section("s3-9", "3.9", "Background Rerun",
+p3_s9 = section("s3-8", "3.8", "Background Rerun",
     "<p><code>POST /rerun</code> triggers a PageRank rerun in the background. "
     "It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p>"
     + cb(
@@ -674,7 +653,7 @@ p3_s9 = section("s3-9", "3.9", "Background Rerun",
     )
 )
 
-p3_s10 = section("s3-10", "3.10", "If Something Fails",
+p3_s10 = section("s3-9", "3.9", "If Something Fails",
     "<h4>API unreachable (connection refused / timeout)</h4>"
     "<p>Step 1: confirm basic network connectivity first.</p>"
     + cb("ping -c 4 " + master_ip, "bash")
@@ -981,13 +960,12 @@ HTML = (
     '    <a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>\n'
     '    <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>\n'
     '    <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>\n'
-    '    <a class="toc-link" href="#s3-4">3.4 Query a Specific Node</a>\n'
-    '    <a class="toc-link" href="#s3-5">3.5 Top N Nodes</a>\n'
-    '    <a class="toc-link" href="#s3-6">3.6 Outgoing Edges (Neighbors)</a>\n'
-    '    <a class="toc-link" href="#s3-7">3.7 Incoming Edges (Influencers)</a>\n'
-    '    <a class="toc-link" href="#s3-8">3.8 Job Statistics</a>\n'
-    '    <a class="toc-link" href="#s3-9">3.9 Background Rerun</a>\n'
-    '    <a class="toc-link" href="#s3-10">3.10 If Something Fails</a>\n'
+    '    <a class="toc-link" href="#s3-4">3.4 Top N Nodes</a>\n'
+    '    <a class="toc-link" href="#s3-5">3.5 Outgoing Edges (Neighbors)</a>\n'
+    '    <a class="toc-link" href="#s3-6">3.6 Incoming Edges (Influencers)</a>\n'
+    '    <a class="toc-link" href="#s3-7">3.7 Job Statistics</a>\n'
+    '    <a class="toc-link" href="#s3-8">3.8 Background Rerun</a>\n'
+    '    <a class="toc-link" href="#s3-9">3.9 If Something Fails</a>\n'
     '  </div>\n'
     '</nav>\n'
 
@@ -1022,7 +1000,7 @@ HTML = (
 
     + part_div(3, "Portability Test")
     + '<p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03\'s output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>\n'
-    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9 + p3_s10
+    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9 + p3_s10
 
     + '</div>\n'  # /content
     '<footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; ' + today + '</footer>\n'

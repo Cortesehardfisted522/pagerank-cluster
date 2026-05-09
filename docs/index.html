@@ -201,13 +201,12 @@ footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border);
     <a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>
     <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>
     <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>
-    <a class="toc-link" href="#s3-4">3.4 Query a Specific Node</a>
-    <a class="toc-link" href="#s3-5">3.5 Top N Nodes</a>
-    <a class="toc-link" href="#s3-6">3.6 Outgoing Edges (Neighbors)</a>
-    <a class="toc-link" href="#s3-7">3.7 Incoming Edges (Influencers)</a>
-    <a class="toc-link" href="#s3-8">3.8 Job Statistics</a>
-    <a class="toc-link" href="#s3-9">3.9 Background Rerun</a>
-    <a class="toc-link" href="#s3-10">3.10 If Something Fails</a>
+    <a class="toc-link" href="#s3-4">3.4 Top N Nodes</a>
+    <a class="toc-link" href="#s3-5">3.5 Outgoing Edges (Neighbors)</a>
+    <a class="toc-link" href="#s3-6">3.6 Incoming Edges (Influencers)</a>
+    <a class="toc-link" href="#s3-7">3.7 Job Statistics</a>
+    <a class="toc-link" href="#s3-8">3.8 Background Rerun</a>
+    <a class="toc-link" href="#s3-9">3.9 If Something Fails</a>
   </div>
 </nav>
 <main class="main">
@@ -403,18 +402,7 @@ print(json.dumps(data, indent=2))
 "</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected response</strong><pre>{
   "nodeId": "41909",
   "pagerank": 445.71778597
-}</pre></div></div></section><section id="s3-4"><h3><span class="sec-num">3.4</span>Query a Specific Node</h3><p><code>GET /node/&lt;id&gt;</code> returns the score for one node. Use the top-ranked node's ID as your test case.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl -- query the top node
-curl http://192.168.1.14:5000/node/41909
-
-# Python
-python3 -c "
-import urllib.request, json
-data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/node/41909').read())
-print(json.dumps(data, indent=2))
-"</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected response</strong><pre>{
-  "nodeId": "41909",
-  "pagerank": 445.71778597
-}</pre></div></div></section><section id="s3-5"><h3><span class="sec-num">3.5</span>Top N Nodes</h3><p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get top 10 nodes
+}</pre></div></div></section><section id="s3-4"><h3><span class="sec-num">3.4</span>Top N Nodes</h3><p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get top 10 nodes
 curl http://192.168.1.14:5000/top/10
 
 # Get top 50 nodes
@@ -426,7 +414,7 @@ curl http://192.168.1.14:5000/top/50</code></pre></div><div class="callout callo
     {"nodeId": "597621", "pagerank": 406.62836675},
     ...
   ]
-}</pre></div></div><h4>Edge cases</h4><ul><li><code>n &lt; 1</code> &rarr; returns <code>400</code> with error message.</li><li><code>n &gt; 1000</code> &rarr; returns all 1000 available nodes with a <code>note</code> field explaining the cap.</li></ul></section><section id="s3-6"><h3><span class="sec-num">3.6</span>Outgoing Edges (Neighbors)</h3><p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all outgoing neighbors of the top-ranked node
+}</pre></div></div><h4>Edge cases</h4><ul><li><code>n &lt; 1</code> &rarr; returns <code>400</code> with error message.</li><li><code>n &gt; 1000</code> &rarr; returns all 1000 available nodes with a <code>note</code> field explaining the cap.</li></ul></section><section id="s3-5"><h3><span class="sec-num">3.5</span>Outgoing Edges (Neighbors)</h3><p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all outgoing neighbors of the top-ranked node
 curl http://192.168.1.14:5000/neighbors/41909
 
 # Python
@@ -439,7 +427,7 @@ print(json.dumps(data, indent=2))
   "direction": "outgoing",
   "count": 42,
   "neighbors": ["123", "456", "789", ...]
-}</pre></div></div><h4>Sink nodes</h4><p>Nodes with no outgoing edges (sink nodes) will return <code>404</code> with the message: <em>This may be a sink node (has no outgoing edges — it receives links but doesn't link to anything).</em> This is expected behaviour &mdash; sink nodes exist in the graph but have no entries in the adjacency list.</p></section><section id="s3-7"><h3><span class="sec-num">3.7</span>Incoming Edges (Influencers)</h3><p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). This is computed on first request by building a reverse-index from <code>data/graph.json</code>, then cached in memory for all subsequent calls &mdash; it does not rebuild on every request.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all nodes that link to the top-ranked node
+}</pre></div></div><h4>Sink nodes</h4><p>Nodes with no outgoing edges (sink nodes) will return <code>404</code> with the message: <em>This may be a sink node (has no outgoing edges — it receives links but doesn't link to anything).</em> This is expected behaviour &mdash; sink nodes exist in the graph but have no entries in the adjacency list.</p></section><section id="s3-6"><h3><span class="sec-num">3.6</span>Incoming Edges (Influencers)</h3><p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). This is computed on first request by building a reverse-index from <code>data/graph.json</code>, then cached in memory for all subsequent calls &mdash; it does not rebuild on every request.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all nodes that link to the top-ranked node
 curl http://192.168.1.14:5000/influencedby/41909
 
 # Python
@@ -452,7 +440,7 @@ print(f\"Node {data['nodeId']} is influenced by {data['count']} nodes\")
   "direction": "incoming",
   "count": 18,
   "sources": ["789", "101", "202", ...]
-}</pre></div></div></section><section id="s3-8"><h3><span class="sec-num">3.8</span>Job Statistics</h3><p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/stats
+}</pre></div></div></section><section id="s3-7"><h3><span class="sec-num">3.7</span>Job Statistics</h3><p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/stats
 
 # Python
 python3 -c "
@@ -468,7 +456,7 @@ print(json.dumps(json.loads(urllib.request.urlopen('http://192.168.1.14:5000/sta
   "completed_at": "2026-05-10T12:34:56+00:00",
   "api_status": "ok",
   "endpoints": ["/top5", "/top/<n>", "/node/<id>", "/neighbors/<id>", "/influencedby/<id>", "/stats", "/rerun", "/health"]
-}</pre></div></div></section><section id="s3-9"><h3><span class="sec-num">3.9</span>Background Rerun</h3><p><code>POST /rerun</code> triggers a PageRank rerun in the background. It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Rerun with more iterations
+}</pre></div></div></section><section id="s3-8"><h3><span class="sec-num">3.8</span>Background Rerun</h3><p><code>POST /rerun</code> triggers a PageRank rerun in the background. It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Rerun with more iterations
 curl -X POST http://192.168.1.14:5000/rerun \
   -H 'Content-Type: application/json' \
   -d '{"iterations": 15}'
@@ -500,7 +488,7 @@ curl -X POST http://192.168.1.14:5000/rerun \
 {"status": "completed", "job_id": "rerun_1746861234", "completed_at": "2026-05-10T12:02:45+00:00", ...}
 
 // failed
-{"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Dataset swap requires a SNAP URL</strong><p>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from <code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS so it is available to all cluster nodes.</p></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>The API stays responsive during a rerun</strong><p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> results until the new job completes. When the job finishes, the API updates all result files and future queries return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p></div></div></section><section id="s3-10"><h3><span class="sec-num">3.10</span>If Something Fails</h3><h4>API unreachable (connection refused / timeout)</h4><p>Step 1: confirm basic network connectivity first.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div><p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p><h4>503 response &mdash; results not ready</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p></div></div><h4>404 on a node ID</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour &mdash; it does not indicate a bug.</p></div></div></section></div>
+{"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Dataset swap requires a SNAP URL</strong><p>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from <code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS so it is available to all cluster nodes.</p></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>The API stays responsive during a rerun</strong><p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> results until the new job completes. When the job finishes, the API updates all result files and future queries return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p></div></div></section><section id="s3-9"><h3><span class="sec-num">3.9</span>If Something Fails</h3><h4>API unreachable (connection refused / timeout)</h4><p>Step 1: confirm basic network connectivity first.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div><p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p><h4>503 response &mdash; results not ready</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p></div></div><h4>404 on a node ID</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour &mdash; it does not indicate a bug.</p></div></div></section></div>
 <footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; May 10, 2026</footer>
 </main>
 </div>
