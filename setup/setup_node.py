@@ -220,7 +220,7 @@ def _write_hadoop_configs(role, java_home):
 
     (conf / "hdfs-site.xml").write_text(f"""<?xml version="1.0"?>
 <configuration>
-  <property><name>dfs.replication</name><value>2</value></property>
+  <property><name>dfs.replication</name><value>3</value></property>
   <property><name>dfs.namenode.name.dir</name><value>file:///{DATA_ROOT}/namenode</value></property>
   <property><name>dfs.datanode.data.dir</name><value>file:///{DATA_ROOT}/datanode</value></property>
   <property><name>dfs.namenode.datanode.registration.ip-hostname-check</name><value>false</value></property>
@@ -314,7 +314,7 @@ def install_spark(role):
         f"spark.executor.memory            2g\n"
         f"spark.driver.memory              1g\n"
         f"spark.serializer                 org.apache.spark.serializer.KryoSerializer\n"
-        f"spark.default.parallelism        4\n"
+        f"spark.default.parallelism        12\n"
     )
 
     # Workers file (master only)
