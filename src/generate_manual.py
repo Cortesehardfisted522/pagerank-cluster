@@ -491,27 +491,27 @@ p3_s3 = section("s3-3", "3.3", "Query a Specific Node",
     )
 )
 
-p3_s4 = section("s3-4", "3.4", "If Something Fails",
-    "<h4>API unreachable (connection refused / timeout)</h4>"
-    "<p>Step 1: confirm basic network connectivity first.</p>"
-    + cb("ping -c 4 " + master_ip, "bash")
-    + "<p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, "
-    "the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p>"
-    "<h4>503 response &mdash; results not ready</h4>"
-    + ok("503 response body",
-        '<pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre>'
-        "<p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. "
-        "Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p>"
+p3_s4 = section("s3-4", "3.4", "Query a Specific Node",
+    "<p><code>GET /node/&lt;id&gt;</code> returns the score for one node. Use the top-ranked node's ID as your test case.</p>"
+    + cb(
+        "# curl -- query the top node\n"
+        "curl http://" + master_ip + ":5000/node/" + top_node + "\n\n"
+        "# Python\n"
+        "python3 -c \"\n"
+        "import urllib.request, json\n"
+        "data = json.loads(urllib.request.urlopen('http://" + master_ip + ":5000/node/" + top_node + "').read())\n"
+        "print(json.dumps(data, indent=2))\n"
+        "\"",
+        "bash"
     )
-    + "<h4>404 on a node ID</h4>"
-    + ok("404 response body",
-        "<pre>" + esc('{"error": "Node \'999999\' not in top-1000 results."}') + "</pre>"
-        "<p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 "
-        "is expected and correct behaviour &mdash; it does not indicate a bug.</p>"
+    + ok("Expected response",
+        '<pre>{\n'
+        '  "nodeId": "' + top_node + '",\n'
+        '  "pagerank": ' + top_score + '\n'
+        '}</pre>'
     )
 )
 
-# New sections for extended endpoints
 p3_s5 = section("s3-5", "3.5", "Top N Nodes",
     "<p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p>"
     + cb(
@@ -671,6 +671,26 @@ p3_s9 = section("s3-9", "3.9", "Background Rerun",
         "<p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> "
         "results until the new job completes. When the job finishes, the API updates all result files and future queries "
         "return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p>"
+    )
+)
+
+p3_s10 = section("s3-10", "3.10", "If Something Fails",
+    "<h4>API unreachable (connection refused / timeout)</h4>"
+    "<p>Step 1: confirm basic network connectivity first.</p>"
+    + cb("ping -c 4 " + master_ip, "bash")
+    + "<p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, "
+    "the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p>"
+    "<h4>503 response &mdash; results not ready</h4>"
+    + ok("503 response body",
+        '<pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre>'
+        "<p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. "
+        "Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p>"
+    )
+    + "<h4>404 on a node ID</h4>"
+    + ok("404 response body",
+        "<pre>" + esc('{"error": "Node \'999999\' not in top-1000 results."}') + "</pre>"
+        "<p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 "
+        "is expected and correct behaviour &mdash; it does not indicate a bug.</p>"
     )
 )
 
@@ -938,7 +958,7 @@ HTML = (
     # Sidebar
     '<nav class="sidebar" id="sidebar">\n'
     '  <div class="sidebar-header">\n'
-    '    <div class="sidebar-logo">FIT3143 &middot; Group 03</div>\n'
+    '    <div class="sidebar-logo">Group 03</div>\n'
     '    <div class="sidebar-title">PageRank Cluster Manual</div>\n'
     '  </div>\n'
     '  <div class="toc">\n'
@@ -961,12 +981,12 @@ HTML = (
     '    <a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>\n'
     '    <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>\n'
     '    <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>\n'
-    '    <a class="toc-link" href="#s3-4">3.4 If Something Fails</a>\n'
     '    <a class="toc-link" href="#s3-5">3.5 Top N Nodes</a>\n'
     '    <a class="toc-link" href="#s3-6">3.6 Outgoing Edges (Neighbors)</a>\n'
     '    <a class="toc-link" href="#s3-7">3.7 Incoming Edges (Influencers)</a>\n'
     '    <a class="toc-link" href="#s3-8">3.8 Job Statistics</a>\n'
     '    <a class="toc-link" href="#s3-9">3.9 Background Rerun</a>\n'
+    '    <a class="toc-link" href="#s3-10">3.10 If Something Fails</a>\n'
     '  </div>\n'
     '</nav>\n'
 
@@ -976,7 +996,7 @@ HTML = (
     # Cover
     '<div class="cover">\n'
     '  <div class="cover-inner">\n'
-    '    <div class="cover-badge">GROUP 03 &middot; CSCS2543-S26 &middot; SECTION H3</div>\n'
+    '    <div class="cover-badge">GROUP 03 &middot; SECTION H3</div>\n'
     '    <h1>Network Graph<br>PageRank Cluster</h1>\n'
     '    <div class="cover-sub">Setup &amp; Portability Manual &mdash; ' + today + '</div>\n'
     '    <div class="cover-chips">\n'
@@ -1001,10 +1021,10 @@ HTML = (
 
     + part_div(3, "Portability Test")
     + '<p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03\'s output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>\n'
-    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9
+    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9 + p3_s10
 
     + '</div>\n'  # /content
-    '<footer>Group 03 &mdash; Parallel and Distributed Computing (CSCS2543) &mdash; Section H3 &mdash; ' + today + '</footer>\n'
+    '<footer>Group 03 &mdash; Section H3 &mdash; ' + today + '</footer>\n'
     '</main>\n'
     '</div>\n'  # /layout
     '<script>\n' + JS + '\n</script>\n'
