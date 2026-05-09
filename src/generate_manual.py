@@ -277,7 +277,9 @@ p1_s7 = section("s1-7", "1.7", "Run PageRank",
     "<thead><tr><th>File</th><th>Contents</th></tr></thead>"
     "<tbody>"
     "<tr><td><code>data/top5.json</code></td><td>Top 5 nodes &mdash; this is what the API serves.</td></tr>"
-    "<tr><td><code>data/results.json</code></td><td>Top 1000 nodes with scores, for <code>/node/&lt;id&gt;</code> queries.</td></tr>"
+    "<tr><td><code>data/results.json</code></td><td>Top 1000 nodes with scores, for <code>/node/&lt;id&gt;</code> and <code>/top/&lt;n&gt;</code> queries.</td></tr>"
+    "<tr><td><code>data/graph.json</code></td><td>Full adjacency list &mdash; every node and its outgoing neighbors. Used by <code>/neighbors</code> and <code>/influencedby</code>.</td></tr>"
+    "<tr><td><code>data/meta.json</code></td><td>Job metadata &mdash; dataset name, node/edge counts, iterations, damping factor, top node, completion timestamp. Used by <code>/stats</code>.</td></tr>"
     "<tr><td><code>data/pagerank_output/part-00000</code></td><td>All nodes, tab-separated: <code>nodeId\\tscore</code>.</td></tr>"
     "</tbody></table>"
 )
@@ -290,10 +292,16 @@ p1_s8 = section("s1-8", "1.8", "Start the API",
         "<pre>==================================================\n"
         "  Group 03 - PageRank Portability API\n"
         "  http://" + master_ip + ":5000\n\n"
-        "  GET /top5          -> top 5 influencers\n"
-        "  GET /node/&lt;id&gt;     -> score for node id\n"
-        "  GET /health        -> status check\n\n"
-        "  [ok] Results loaded -- top node: 41909 (445.71778597)\n"
+        "  GET  /top5              -> top 5 influencers\n"
+        "  GET  /top/&lt;n&gt;          -> top N ranked nodes\n"
+        "  GET  /node/&lt;id&gt;         -> score for node id\n"
+        "  GET  /neighbors/&lt;id&gt;    -> outgoing edges\n"
+        "  GET  /influencedby/&lt;id&gt; -> incoming edges\n"
+        "  GET  /stats             -> job metadata + service info\n"
+        "  POST /rerun             -> trigger background rerun\n"
+        "  GET  /rerun/status      -> rerun job status\n"
+        "  GET  /health            -> status check\n\n"
+        "  [ok] Results loaded -- top node: " + top_node + " (" + top_score + ")\n"
         "==================================================</pre>"
     )
     + "<p>In a second terminal, confirm it responds:</p>"
@@ -500,6 +508,169 @@ p3_s4 = section("s3-4", "3.4", "If Something Fails",
         "<pre>" + esc('{"error": "Node \'999999\' not in top-1000 results."}') + "</pre>"
         "<p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 "
         "is expected and correct behaviour &mdash; it does not indicate a bug.</p>"
+    )
+)
+
+# New sections for extended endpoints
+p3_s5 = section("s3-5", "3.5", "Top N Nodes",
+    "<p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p>"
+    + cb(
+        "# Get top 10 nodes\n"
+        "curl http://" + master_ip + ":5000/top/10\n\n"
+        "# Get top 50 nodes\n"
+        "curl http://" + master_ip + ":5000/top/50",
+        "bash"
+    )
+    + ok("Response format",
+        '<pre>{\n'
+        '  "requested": 10,\n'
+        '  "returned": 10,\n'
+        '  "nodes": [\n'
+        '    {"nodeId": "41909", "pagerank": 445.71778597},\n'
+        '    {"nodeId": "597621", "pagerank": 406.62836675},\n'
+        '    ...\n'
+        '  ]\n'
+        '}</pre>'
+    )
+    + "<h4>Edge cases</h4>"
+    "<ul>"
+    "<li><code>n &lt; 1</code> &rarr; returns <code>400</code> with error message.</li>"
+    "<li><code>n &gt; 1000</code> &rarr; returns all 1000 available nodes with a <code>note</code> field explaining the cap.</li>"
+    "</ul>"
+)
+
+p3_s6 = section("s3-6", "3.6", "Outgoing Edges (Neighbors)",
+    "<p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p>"
+    + cb(
+        "# Get all outgoing neighbors of the top-ranked node\n"
+        "curl http://" + master_ip + ":5000/neighbors/" + top_node + "\n\n"
+        "# Python\n"
+        "python3 -c \"\n"
+        "import urllib.request, json\n"
+        "data = json.loads(urllib.request.urlopen('http://" + master_ip + ":5000/neighbors/" + top_node + "').read())\n"
+        "print(json.dumps(data, indent=2))\n"
+        "\"",
+        "bash"
+    )
+    + ok("Response format",
+        '<pre>{\n'
+        '  "nodeId": "' + top_node + '",\n'
+        '  "direction": "outgoing",\n'
+        '  "count": 42,\n'
+        '  "neighbors": ["123", "456", "789", ...]\n'
+        '}</pre>'
+    )
+    + "<h4>Sink nodes</h4>"
+    "<p>Nodes with no outgoing edges (sink nodes) will return <code>404</code> with the message: "
+    "<em>This may be a sink node (has no outgoing edges — it receives links but doesn't link to anything).</em> "
+    "This is expected behaviour &mdash; sink nodes exist in the graph but have no entries in the adjacency list.</p>"
+)
+
+p3_s7 = section("s3-7", "3.7", "Incoming Edges (Influencers)",
+    "<p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). "
+    "This is computed on first request by building a reverse-index from <code>data/graph.json</code>, "
+    "then cached in memory for all subsequent calls &mdash; it does not rebuild on every request.</p>"
+    + cb(
+        "# Get all nodes that link to the top-ranked node\n"
+        "curl http://" + master_ip + ":5000/influencedby/" + top_node + "\n\n"
+        "# Python\n"
+        "python3 -c \"\n"
+        "import urllib.request, json\n"
+        "data = json.loads(urllib.request.urlopen('http://" + master_ip + ":5000/influencedby/" + top_node + "').read())\n"
+        "print(f\\\"Node {data['nodeId']} is influenced by {data['count']} nodes\\\")\n"
+        "\"",
+        "bash"
+    )
+    + ok("Response format",
+        '<pre>{\n'
+        '  "nodeId": "' + top_node + '",\n'
+        '  "direction": "incoming",\n'
+        '  "count": 18,\n'
+        '  "sources": ["789", "101", "202", ...]\n'
+        '}</pre>'
+    )
+)
+
+p3_s8 = section("s3-8", "3.8", "Job Statistics",
+    "<p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p>"
+    + cb(
+        "curl http://" + master_ip + ":5000/stats\n\n"
+        "# Python\n"
+        "python3 -c \"\n"
+        "import urllib.request, json\n"
+        "print(json.dumps(json.loads(urllib.request.urlopen('http://" + master_ip + ":5000/stats').read()), indent=2))\n"
+        "\"",
+        "bash"
+    )
+    + ok("Response format",
+        '<pre>{\n'
+        '  "dataset": "web-Google.txt",\n'
+        '  "total_nodes": 875713,\n'
+        '  "total_edges": 5105039,\n'
+        '  "iterations": 10,\n'
+        '  "damping_factor": 0.85,\n'
+        '  "top_node": "' + top_node + '",\n'
+        '  "completed_at": "2026-05-10T12:34:56+00:00",\n'
+        '  "api_status": "ok",\n'
+        '  "endpoints": ["/top5", "/top/<n>", "/node/<id>", "/neighbors/<id>", "/influencedby/<id>", "/stats", "/rerun", "/health"]\n'
+        '}</pre>'
+    )
+)
+
+p3_s9 = section("s3-9", "3.9", "Background Rerun",
+    "<p><code>POST /rerun</code> triggers a PageRank rerun in the background. "
+    "It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p>"
+    + cb(
+        "# Rerun with more iterations\n"
+        "curl -X POST http://" + master_ip + ":5000/rerun \\\n"
+        "  -H 'Content-Type: application/json' \\\n"
+        "  -d '{\"iterations\": 15}'\n\n"
+        "# Rerun with different damping factor\n"
+        "curl -X POST http://" + master_ip + ":5000/rerun \\\n"
+        "  -H 'Content-Type: application/json' \\\n"
+        "  -d '{\"damping_factor\": 0.90}'\n\n"
+        "# Swap dataset entirely — Twitter graph from SNAP\n"
+        "curl -X POST http://" + master_ip + ":5000/rerun \\\n"
+        "  -H 'Content-Type: application/json' \\\n"
+        "  -d '{\"dataset_url\": \"https://snap.stanford.edu/data/twitter_combined.txt.gz\"}'\n\n"
+        "# Combine all parameters\n"
+        "curl -X POST http://" + master_ip + ":5000/rerun \\\n"
+        "  -H 'Content-Type: application/json' \\\n"
+        "  -d '{\"iterations\": 20, \"damping_factor\": 0.88, \"dataset_url\": \"https://snap.stanford.edu/data/web-Google.txt.gz\"}'",
+        "bash"
+    )
+    + ok("Immediate response (202 Accepted)",
+        '<pre>{\n'
+        '  "job_id": "rerun_1746861234",\n'
+        '  "status": "queued",\n'
+        '  "params": {"iterations": 15}\n'
+        '}</pre>'
+    )
+    + "<h4>Check job status</h4>"
+    + cb(
+        "curl http://" + master_ip + ":5000/rerun/status",
+        "bash"
+    )
+    + ok("Status responses",
+        '<pre>// idle (no rerun ever triggered)\n'
+        '{"status": "idle"}\n\n'
+        '// running\n'
+        '{"status": "running", "job_id": "rerun_1746861234", "started_at": "2026-05-10T12:00:00+00:00", ...}\n\n'
+        '// completed\n'
+        '{"status": "completed", "job_id": "rerun_1746861234", "completed_at": "2026-05-10T12:02:45+00:00", ...}\n\n'
+        '// failed\n'
+        '{"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre>'
+    )
+    + warn("Dataset swap requires a SNAP URL",
+        "<p>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, "
+        "then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from "
+        "<code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS "
+        "so it is available to all cluster nodes.</p>"
+    )
+    + tip("The API stays responsive during a rerun",
+        "<p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> "
+        "results until the new job completes. When the job finishes, the API updates all result files and future queries "
+        "return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p>"
     )
 )
 
@@ -791,6 +962,11 @@ HTML = (
     '    <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>\n'
     '    <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>\n'
     '    <a class="toc-link" href="#s3-4">3.4 If Something Fails</a>\n'
+    '    <a class="toc-link" href="#s3-5">3.5 Top N Nodes</a>\n'
+    '    <a class="toc-link" href="#s3-6">3.6 Outgoing Edges (Neighbors)</a>\n'
+    '    <a class="toc-link" href="#s3-7">3.7 Incoming Edges (Influencers)</a>\n'
+    '    <a class="toc-link" href="#s3-8">3.8 Job Statistics</a>\n'
+    '    <a class="toc-link" href="#s3-9">3.9 Background Rerun</a>\n'
     '  </div>\n'
     '</nav>\n'
 
@@ -825,7 +1001,7 @@ HTML = (
 
     + part_div(3, "Portability Test")
     + '<p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03\'s output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>\n'
-    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4
+    + p3_intro + p3_s1 + p3_s2 + p3_s3 + p3_s4 + p3_s5 + p3_s6 + p3_s7 + p3_s8 + p3_s9
 
     + '</div>\n'  # /content
     '<footer>Group 03 &mdash; Parallel and Distributed Computing (CSCS2543) &mdash; Section H3 &mdash; ' + today + '</footer>\n'
