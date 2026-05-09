@@ -2,7 +2,7 @@
 
 Distributed PageRank over the [Stanford Web-Google graph](https://snap.stanford.edu/data/web-Google.html) (875 K nodes, 5 M edges) using Apache Spark and Hadoop HDFS. Exposes results through a small REST API for cross-group portability testing.
 
-**Stack:** Python 3.8+ · Apache Spark 3.5.1 · Hadoop HDFS 3.3.6  
+**Stack:** Python 3.8+ · Apache Spark 3.5.1 · Hadoop HDFS 3.3.6
 **OS support:** macOS · Linux · Windows
 
 ---
@@ -27,16 +27,17 @@ setup/
   register_worker.py  adds a worker IP to the cluster roster
 
 src/
-  download_dataset.py downloads web-Google.txt from SNAP (~100 MB)
-  pagerank.py         Spark RDD PageRank implementation (10 iterations)
-  api.py              Flask REST API — /top5, /node/<id>, /health
+  download_dataset.py downloads datasets from SNAP
+  pagerank.py         Spark RDD PageRank implementation
+  api.py              Flask REST API
   generate_manual.py  generates docs/manual.html
 
 data/
-  top5.json           top-5 results (committed as sample output)
-
-docs/
-  manual.html         full setup manual (generated)
+  top5.json           top-5 results
+  results.json        top-1000 results
+  graph.json          full adjacency list (node → [neighbors])
+  meta.json           job metadata (nodes, edges, iterations, damping factor)
+  pagerank_output/    all nodes, tab-separated (nodeId\tscore)
 ```
 
 ---
@@ -77,7 +78,7 @@ python3 setup/register_worker.py <worker_ip>
 python3 src/download_dataset.py
 hdfs dfs -put data/web-Google.txt /pagerank/input/
 
-# Submit the job (10 iterations, damping factor 0.85)
+# Submit the job (default: 10 iterations, damping 0.85)
 spark-submit \
   --master spark://<MASTER_IP>:7077 \
   --executor-memory 2g \
@@ -85,7 +86,8 @@ spark-submit \
   src/pagerank.py 10
 ```
 
-Results are written to `data/top5.json` and `data/results.json`.
+On completion, five files are written to `data/`:
+`top5.json` (top-5 ranked nodes), `results.json` (top-1000), `graph.json` (full adjacency list), `meta.json` (job metadata), and `pagerank_output/part-00000` (all nodes, tab-separated).
 
 ---
 
@@ -97,9 +99,15 @@ python3 src/api.py
 
 | Endpoint | Description |
 |---|---|
-| `GET /health` | Service status and metadata |
+| `GET /health` | Service status |
 | `GET /top5` | Top 5 nodes by PageRank score |
+| `GET /top/<n>` | Top N nodes (1–1000, capped at available) |
 | `GET /node/<id>` | Score for a specific node (top 1000 only) |
+| `GET /neighbors/<id>` | Nodes this node links to (outgoing edges) |
+| `GET /influencedby/<id>` | Nodes that link to this node (incoming edges) |
+| `GET /stats` | Job metadata (nodes, edges, iterations, damping, timestamps) |
+| `POST /rerun` | Trigger a background rerun with optional new parameters |
+| `GET /rerun/status` | Current rerun job status |
 
 The API listens on `0.0.0.0:5000`.
 
@@ -114,6 +122,22 @@ The API listens on `0.0.0.0:5000`.
   { "rank": 5, "nodeId": "537039", "pagerank": 383.90912550 }
 ]
 ```
+
+**Background rerun** — `POST /rerun` accepts optional parameters to change iterations, damping factor, or swap to a different SNAP dataset entirely:
+
+```bash
+# More iterations
+curl -X POST http://localhost:5000/rerun \
+  -H 'Content-Type: application/json' \
+  -d '{"iterations": 15}'
+
+# Swap to Twitter graph
+curl -X POST http://localhost:5000/rerun \
+  -H 'Content-Type: application/json' \
+  -d '{"dataset_url": "https://snap.stanford.edu/data/twitter_combined.txt.gz"}'
+```
+
+Check status with `GET /rerun/status` — returns `idle`, `queued`, `running`, `completed`, or `failed` with timestamps.
 
 ---
 
