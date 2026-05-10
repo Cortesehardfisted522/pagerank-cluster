@@ -4,8 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/generate_manual.py'
-      - 'data/top5.json'
+      - 'docs/index.html'
       - '.github/workflows/deploy-manual.yml'
   workflow_dispatch:
 
@@ -23,13 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Generate manual
-        run: python3 src/generate_manual.py
 
       - uses: actions/upload-pages-artifact@v3
         with:
