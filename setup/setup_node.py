@@ -32,9 +32,16 @@ LOCAL_IP = get_local_ip()
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def die(msg):
+def die(msg, hint=None):
     print(f"\n✗  ERROR: {msg}", file=sys.stderr)
+    if hint:
+        print(f"  → {hint}", file=sys.stderr)
     sys.exit(1)
+
+def warn(msg, hint=None):
+    print(f"\n⚠  WARNING: {msg}")
+    if hint:
+        print(f"  → {hint}")
 
 def ok(msg):
     print(f"  ✓  {msg}")
@@ -50,7 +57,24 @@ def run(cmd, check=True, shell=False, capture=False):
     kwargs = dict(check=check, shell=shell)
     if capture:
         kwargs.update(stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    return subprocess.run(cmd, **kwargs)
+    try:
+        return subprocess.run(cmd, **kwargs)
+    except FileNotFoundError:
+        cmd_name = cmd.split()[0] if isinstance(cmd, str) else cmd[0]
+        die(
+            f"'{cmd_name}' not found — is it installed and on your PATH?",
+            f"Verify the prerequisite is installed before re-running this script."
+        )
+    except PermissionError:
+        die(
+            f"Permission denied running: {cmd}",
+            "Try running as administrator (Windows) or with sudo (macOS/Linux)."
+        )
+    except OSError as e:
+        if "no such file" in str(e).lower():
+            cmd_name = cmd.split()[0] if isinstance(cmd, str) else cmd[0]
+            die(f"'{cmd_name}' not found or not executable.", "Check that the prerequisite is installed.")
+        raise
 
 def sudo_run(cmd_list):
     """Run with elevated privileges (sudo on unix, plain on windows — run as admin)."""
@@ -93,11 +117,10 @@ def download(url, dest):
             bar = "█" * (pct // 5) + "░" * (20 - pct // 5)
             print(f"\r    [{bar}] {pct}%", end="", flush=True)
 
-    # Create SSL context that handles certificate issues on macOS/Python 3.13+
     import ssl
+    ssl_context = None
     try:
         ssl_context = ssl.create_default_context()
-        # On some systems, certifi bundle is missing - fall back to unverified
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
     except Exception:
@@ -122,6 +145,27 @@ def download(url, dest):
             urllib.request.urlretrieve(url, tmp_dest, reporthook=progress)
         tmp_dest.replace(dest)
         print()
+    except urllib.error.HTTPError as e:
+        print()
+        warn(f"HTTP error {e.code} downloading {dest.name} from {url}")
+        hint = (
+            "The download URL may have moved. "
+            "Try running the script again — it will use fallback mirrors automatically."
+        )
+        die(f"Download failed (HTTP {e.code})", hint)
+    except urllib.error.URLError as e:
+        print()
+        die(
+            f"Could not reach {url}",
+            "Check your internet connection. Proxy or firewall may be blocking outbound HTTPS."
+        )
+    except ssl.SSLCertVerificationError:
+        print()
+        die(
+            "SSL certificate verification failed",
+            "Your Python installation may have an incomplete certificate store. "
+            "On macOS: pip3 install --upgrade certifi  &&  /Applications/Python\\ 3.*/Install\\ Certificates.command"
+        )
     except Exception:
         print()
         if tmp_dest.exists():
@@ -148,12 +192,23 @@ def install_java():
         return
 
     if IS_LINUX:
-        run(["sudo", "apt-get", "update", "-q"])
-        run(["sudo", "apt-get", "install", "-y", "-q", f"openjdk-{JAVA_VERSION}-jdk"])
+        result = run(["sudo", "apt-get", "update", "-q"], check=False, capture=True)
+        if result.returncode != 0:
+            warn("apt-get update failed", "Check your apt sources and internet connection.")
+        result = run(["sudo", "apt-get", "install", "-y", "-q", f"openjdk-{JAVA_VERSION}-jdk"], check=False)
+        if result.returncode != 0:
+            die(
+                f"openjdk-{JAVA_VERSION}-jdk package failed to install",
+                "Try: sudo apt-get install -y openjdk-11-jdk   or   sudo apt-get install -y openjdk-17-jdk"
+            )
     elif IS_MAC:
         if shutil.which("brew"):
-            run(["brew", "install", f"openjdk@{JAVA_VERSION}"])
-            # Symlink so it's on PATH
+            result = run(["brew", "install", f"openjdk@{JAVA_VERSION}"], check=False)
+            if result.returncode != 0:
+                die(
+                    f"brew install openjdk@{JAVA_VERSION} failed",
+                    "Try manually: brew install openjdk@11   or   brew install openjdk@17"
+                )
             brew_prefix = subprocess.check_output(["brew", "--prefix"], text=True).strip()
             jdk_bin = Path(brew_prefix) / f"opt/openjdk@{JAVA_VERSION}/bin"
             profile = Path.home() / (".zprofile" if Path.home().joinpath(".zprofile").exists() else ".bash_profile")
@@ -162,15 +217,31 @@ def install_java():
                 f.write(export_line)
             print(f"  Added Java to {profile}. Run: source {profile}")
         else:
-            die("Homebrew not found. Install from https://brew.sh then re-run.")
+            die(
+                "Homebrew not found",
+                "Install Homebrew: /bin/bash -c \"$(curl -fsSL https://brew.sh)\"  Then re-run this script."
+            )
     elif IS_WINDOWS:
         if shutil.which("winget"):
-            run(["winget", "install", "EclipseAdoptium.Temurin.11.JDK", "--silent"], check=False)
+            result = run(["winget", "install", "EclipseAdoptium.Temurin.17.JDK", "--silent"], check=False)
+            if result.returncode != 0:
+                warn(
+                    "winget install failed — Java was not installed automatically",
+                    "Download Java 17 from: https://adoptium.net/temurin/releases/?version=17&os=windows&arch=x64&package=jdk"
+                )
         else:
-            die("Install Java 11 manually from https://adoptium.net then re-run.")
+            die(
+                "winget not found",
+                "Download Java 17 from: https://adoptium.net/temurin/releases/?version=17&os=windows&arch=x64&package=jdk  (.msi installer)"
+            )
 
     if not verify_java():
-        die("Java install failed. Please install Java 11 manually and re-run.")
+        java_version = subprocess.run(["java", "-version"], capture=True, text=True, stderr=subprocess.STDOUT)
+        current = java_version.stdout.splitlines()[0] if java_version.stdout else "(not found)"
+        die(
+            f"Java {JAVA_VERSION} not found after install. Current: {current}",
+            f"Install Java 11 or 17 manually, then re-run this script."
+        )
 
 
 # ── Python deps ───────────────────────────────────────────────────────────────
@@ -181,7 +252,12 @@ def install_python_deps():
     pip = [sys.executable, "-m", "pip", "install", "-q"] + pkgs
     if IS_LINUX:
         pip += ["--break-system-packages"]
-    run(pip, check=False)
+    result = run(pip, check=False, capture=True)
+    if result.returncode != 0:
+        warn(
+            f"pip install failed — pyspark/flask/requests may not be installed",
+            f"Try manually: {' '.join(pip)}"
+        )
     ok(f"Installed: {', '.join(pkgs)}")
 
 
@@ -190,7 +266,6 @@ def install_python_deps():
 def install_hadoop(role):
     section(f"Hadoop {HADOOP_VERSION} ({role})")
 
-    # Use shorter path on Windows to avoid 260-character path limit
     if IS_WINDOWS:
         TMP = Path("C:/temp_hadoop")
         TMP.mkdir(exist_ok=True)
@@ -205,23 +280,35 @@ def install_hadoop(role):
     download(url, archive)
 
     if not HADOOP_HOME.exists():
-        if IS_WINDOWS:
-            # Extract to INSTALL_ROOT
-            INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
-            extract_tar(archive, HADOOP_HOME)
-        else:
-            run(["sudo", "tar", "-xzf", str(archive), "-C", str(INSTALL_ROOT)])
+        try:
+            if IS_WINDOWS:
+                INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
+                extract_tar(archive, HADOOP_HOME)
+            else:
+                run(["sudo", "tar", "-xzf", str(archive), "-C", str(INSTALL_ROOT)])
+        except Exception as e:
+            if "Permission denied" in str(e) or "EACCES" in str(e):
+                die(
+                    f"Permission denied writing to {INSTALL_ROOT}",
+                    "The install directory requires admin access. "
+                    "On macOS/Linux: ensure you entered your sudo password correctly. "
+                    "On Windows: re-run as Administrator."
+                )
+            raise
         ok(f"Hadoop at {HADOOP_HOME}")
     else:
         ok(f"Hadoop already at {HADOOP_HOME}")
 
-    # Windows needs winutils.exe for HDFS to work
     if IS_WINDOWS:
         _install_winutils()
 
     java_home = find_java_home()
     if not java_home:
-        die("Cannot find JAVA_HOME. Set it manually in your environment.")
+        die(
+            "Cannot find JAVA_HOME",
+            "Set JAVA_HOME in your environment:  set JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17...  (Windows)  "
+            "or  export JAVA_HOME=/usr/lib/jvm/java-17...  (macOS/Linux)"
+        )
 
     _write_hadoop_configs(role, java_home)
 
@@ -327,22 +414,35 @@ def install_spark(role):
                 last_error = e
                 print(f"  ⚠  Could not download from {url}: {e}")
         else:
-            die(f"Failed to download Spark archive from all known mirrors. Last error: {last_error}")
+            die(
+                f"Spark {SPARK_VERSION} download failed from all mirrors",
+                "The version may have been retired. "
+                "Try updating SPARK_VERSION in setup/config.py to a newer release "
+                "(check available versions at https://spark.apache.org/downloads.html)"
+            )
     else:
         ok(f"Already downloaded: {archive.name}")
 
     if not SPARK_HOME.exists():
-        if IS_WINDOWS:
-            INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
-            extract_tar(archive, SPARK_HOME)
-            extracted = INSTALL_ROOT / f"spark-{SPARK_VERSION}-bin-hadoop3"
-            if extracted.exists() and not SPARK_HOME.exists():
-                extracted.rename(SPARK_HOME)
-        else:
-            run(["sudo", "tar", "-xzf", str(archive), "-C", str(INSTALL_ROOT)])
-            extracted = INSTALL_ROOT / f"spark-{SPARK_VERSION}-bin-hadoop3"
-            if extracted.exists():
-                run(["sudo", "mv", str(extracted), str(SPARK_HOME)])
+        try:
+            if IS_WINDOWS:
+                INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
+                extract_tar(archive, SPARK_HOME)
+                extracted = INSTALL_ROOT / f"spark-{SPARK_VERSION}-bin-hadoop3"
+                if extracted.exists() and not SPARK_HOME.exists():
+                    extracted.rename(SPARK_HOME)
+            else:
+                run(["sudo", "tar", "-xzf", str(archive), "-C", str(INSTALL_ROOT)])
+                extracted = INSTALL_ROOT / f"spark-{SPARK_VERSION}-bin-hadoop3"
+                if extracted.exists():
+                    run(["sudo", "mv", str(extracted), str(SPARK_HOME)])
+        except Exception as e:
+            if "Permission denied" in str(e) or "EACCES" in str(e):
+                die(
+                    f"Permission denied writing to {INSTALL_ROOT}",
+                    "Ensure you have admin/sudo access. On Windows: re-run as Administrator."
+                )
+            raise
         ok(f"Spark at {SPARK_HOME}")
     else:
         ok(f"Spark already at {SPARK_HOME}")
@@ -401,13 +501,17 @@ def install_spark(role):
 # ── Format NameNode ───────────────────────────────────────────────────────────
 
 def format_namenode():
-    # Check if NameNode is already running - don't format if it is
     jps = shutil.which("jps") or str(find_java_home() / "bin" / "jps" if find_java_home() else "jps")
     try:
         out = subprocess.check_output([jps], text=True)
         if "NameNode" in out:
             ok("NameNode already running — skipping format")
             return
+    except FileNotFoundError:
+        warn(
+            "jps not found",
+            "JAVA_HOME may not be set correctly. Check that Java is installed and on your PATH."
+        )
     except Exception:
         pass
 
@@ -417,8 +521,22 @@ def format_namenode():
         return
     print("  Formatting NameNode...")
     hdfs = HADOOP_HOME / "bin" / ("hdfs.cmd" if IS_WINDOWS else "hdfs")
-    run([str(hdfs), "namenode", "-format", "-nonInteractive", "-force"])
-    ok("NameNode formatted")
+    result = run([str(hdfs), "namenode", "-format", "-nonInteractive", "-force"], check=False, capture=True)
+    if result.returncode != 0:
+        err = result.stderr if result.stderr else result.stdout
+        if "cannot be formatted" in err.lower() or "already running" in err.lower():
+            warn(
+                "NameNode cannot be formatted — a NameNode process is already running",
+                "Stop the running NameNode first:  stop-dfs.sh   (macOS/Linux)   or   stop-dfs.cmd   (Windows)"
+            )
+        else:
+            warn(
+                f"NameNode format failed (exit {result.returncode})",
+                f"Check Hadoop logs in: {HADOOP_HOME}/logs/"
+            )
+            print(f"  Error output: {err[:500]}")
+    else:
+        ok("NameNode formatted")
 
 
 # ── Start services ────────────────────────────────────────────────────────────
@@ -426,40 +544,67 @@ def format_namenode():
 def check_ssh():
     """Verify SSH (Remote Login) is enabled on macOS."""
     if IS_MAC:
-        # Check if Remote Login is enabled via system preferences
         try:
             out = subprocess.check_output(
                 ["sudo", "systemsetup", "-getremotelogin"], text=True
             )
             if "On" not in out:
-                print("  ⚠  SSH Remote Login is not enabled.")
-                print("     Enable it: System Settings → General → Remote Login → ON")
-                print("     Or run: sudo systemsetup -setremotelogin on")
+                warn(
+                    "SSH Remote Login is not enabled — Hadoop daemons may fail to communicate",
+                    "Enable it: System Settings → General → Remote Login → ON   OR   sudo systemsetup -setremotelogin on"
+                )
+        except FileNotFoundError:
+            warn(
+                "systemsetup not found",
+                "Ensure macOS admin tools are available, then re-run."
+            )
         except Exception:
-            pass  # systemsetup may require admin, try basic ssh check
+            pass
 
 
 def start_master_services():
     section("Starting services (master)")
-
-    # Verify SSH is enabled (required for Hadoop daemons to communicate)
     check_ssh()
 
     sbin = HADOOP_HOME / "sbin"
-
-    # Start HDFS
     start_dfs = sbin / f"start-dfs{SBIN_EXT}"
-    run([str(start_dfs)])
+    result = run([str(start_dfs)], check=False, capture=True)
+    if result.returncode != 0:
+        err = result.stderr if result.stderr else result.stdout
+        if "ssh" in err.lower() or "connection refused" in err.lower():
+            warn(
+                "start-dfs.sh failed — likely an SSH connectivity issue",
+                "Enable SSH Remote Login on macOS: System Settings → General → Remote Login → ON  "
+                "OR  sudo systemsetup -setremotelogin on"
+            )
+        elif "permission denied" in err.lower():
+            warn(
+                "start-dfs.sh failed — permission denied",
+                "Ensure your user has sudo access, or re-run with appropriate permissions."
+            )
+        else:
+            warn(f"HDFS startup had issues (exit {result.returncode}). Check {HADOOP_HOME}/logs/")
 
     import time; time.sleep(4)
 
-    # Start Spark Master
     start_master = SPARK_HOME / "sbin" / f"start-master{SBIN_EXT}"
-    run([str(start_master)])
+    result = run([str(start_master)], check=False, capture=True)
+    if result.returncode != 0:
+        err = result.stderr if result.stderr else result.stdout
+        if "user" in err.lower() and ("unknown" in err.lower() or "not found" in err.lower()):
+            warn(
+                "Spark Master failed to start — username resolution error on macOS",
+                "This is a known macOS/Java compatibility issue. "
+                "The cluster will still function; restart Spark manually if workers can't connect."
+            )
+        else:
+            warn(
+                f"Spark Master startup had issues (exit {result.returncode}). Check {SPARK_HOME}/logs/"
+            )
+            print(f"  Error: {err[:300]}")
 
     time.sleep(2)
 
-    # Create HDFS dirs
     hdfs = HADOOP_HOME / "bin" / ("hdfs.cmd" if IS_WINDOWS else "hdfs")
     run([str(hdfs), "dfs", "-mkdir", "-p", "/pagerank/input"],  check=False)
     run([str(hdfs), "dfs", "-mkdir", "-p", "/pagerank/output"], check=False)
@@ -473,17 +618,46 @@ def start_worker_services():
     section("Starting services (worker)")
     sbin = HADOOP_HOME / "sbin"
 
-    # Start DataNode
     start_dn = sbin / f"hadoop-daemon{SBIN_EXT}"
     if not start_dn.exists():
         start_dn = sbin / ("hadoop-daemon.sh" if not IS_WINDOWS else "hadoop-daemon.cmd")
-    run([str(start_dn), "start", "datanode"])
+    result = run([str(start_dn), "start", "datanode"], check=False, capture=True)
+    if result.returncode != 0:
+        err = result.stderr if result.stderr else result.stdout
+        if "ssh" in err.lower() or "connection refused" in err.lower():
+            warn(
+                "DataNode failed to start — SSH issue",
+                "Enable SSH Remote Login: System Settings → General → Remote Login → ON  OR  sudo systemsetup -setremotelogin on"
+            )
+        else:
+            warn(
+                f"DataNode startup had issues (exit {result.returncode}). Check {HADOOP_HOME}/logs/"
+            )
+            print(f"  Error: {err[:300]}")
 
     import time; time.sleep(2)
 
-    # Start Spark Worker
     start_worker = SPARK_HOME / "sbin" / f"start-worker{SBIN_EXT}"
-    run([str(start_worker), SPARK_MASTER_URL])
+    result = run([str(start_worker), SPARK_MASTER_URL], check=False, capture=True)
+    if result.returncode != 0:
+        err = result.stderr if result.stderr else result.stdout
+        if "connection refused" in err.lower():
+            warn(
+                f"Spark Worker cannot reach master at {MASTER_IP}:7077",
+                f"Verify MASTER_IP={MASTER_IP} is correct and the master is running. "
+                "Check firewall: ports 7077, 9000, 9866 must be open on both machines."
+            )
+        elif "user" in err.lower() and ("unknown" in err.lower() or "not found" in err.lower()):
+            warn(
+                "Spark Worker failed — macOS username resolution error",
+                "This is a known macOS/Java compatibility issue. "
+                "The worker may still connect; check the Spark UI at the master's port 8080."
+            )
+        else:
+            warn(
+                f"Spark Worker startup had issues (exit {result.returncode}). Check {SPARK_HOME}/logs/"
+            )
+            print(f"  Error: {err[:300]}")
 
     ok(f"DataNode and Spark Worker started (this machine: {LOCAL_IP})")
     print(f"\n  Tell master to register this worker:")
