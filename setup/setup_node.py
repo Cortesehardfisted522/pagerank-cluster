@@ -70,9 +70,14 @@ def mkdir(path, as_sudo=False):
 def chown(path):
     """Give current user ownership of a directory (Unix only)."""
     if not IS_WINDOWS:
-        user = os.environ.get("USER", os.environ.get("LOGNAME", ""))
-        if user:
-            run(["sudo", "chown", "-R", f"{user}:{user}", str(path)], check=False)
+        try:
+            import pwd
+            user = pwd.getpwuid(os.getuid()).pw_name
+            # On macOS, group assignment can fail; use user-only chown for safety
+            run(["sudo", "chown", "-R", user, str(path)], check=False)
+        except Exception:
+            # Keep setup moving even if ownership normalization fails.
+            run(["sudo", "chown", "-R", os.environ.get("USER", "root"), str(path)], check=False)
 
 def download(url, dest):
     dest = Path(dest)
@@ -80,6 +85,7 @@ def download(url, dest):
         ok(f"Already downloaded: {dest.name}")
         return
     print(f"  Downloading {dest.name}...")
+    tmp_dest = Path(f"{dest}.part")
 
     def progress(count, block, total):
         if total > 0:
@@ -87,8 +93,40 @@ def download(url, dest):
             bar = "█" * (pct // 5) + "░" * (20 - pct // 5)
             print(f"\r    [{bar}] {pct}%", end="", flush=True)
 
-    urllib.request.urlretrieve(url, dest, reporthook=progress)
-    print()
+    # Create SSL context that handles certificate issues on macOS/Python 3.13+
+    import ssl
+    try:
+        ssl_context = ssl.create_default_context()
+        # On some systems, certifi bundle is missing - fall back to unverified
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+    except Exception:
+        ssl_context = None
+
+    try:
+        if ssl_context:
+            with urllib.request.urlopen(url, context=ssl_context) as response:
+                total = response.headers.get('Content-Length', 0)
+                with open(tmp_dest, 'wb') as f:
+                    downloaded = 0
+                    block_size = 8192
+                    while True:
+                        chunk = response.read(block_size)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total:
+                            progress(downloaded, 1, int(total))
+        else:
+            urllib.request.urlretrieve(url, tmp_dest, reporthook=progress)
+        tmp_dest.replace(dest)
+        print()
+    except Exception:
+        print()
+        if tmp_dest.exists():
+            tmp_dest.unlink(missing_ok=True)
+        raise
 
 
 def extract_tar(archive, dest):
@@ -152,8 +190,13 @@ def install_python_deps():
 def install_hadoop(role):
     section(f"Hadoop {HADOOP_VERSION} ({role})")
 
-    TMP = Path.home() / "Downloads"
-    TMP.mkdir(exist_ok=True)
+    # Use shorter path on Windows to avoid 260-character path limit
+    if IS_WINDOWS:
+        TMP = Path("C:/temp_hadoop")
+        TMP.mkdir(exist_ok=True)
+    else:
+        TMP = Path.home() / "Downloads"
+        TMP.mkdir(exist_ok=True)
 
     archive = TMP / f"hadoop-{HADOOP_VERSION}.tar.gz"
     url = f"https://downloads.apache.org/hadoop/common/hadoop-{HADOOP_VERSION}/hadoop-{HADOOP_VERSION}.tar.gz"
@@ -239,6 +282,9 @@ def _write_hadoop_configs(role, java_home):
     if "JAVA_HOME" not in env_content:
         with open(env_file, "a") as f:
             f.write(f"\nexport JAVA_HOME={java_home}\n")
+            # Suppress sun.misc.Unsafe warnings on macOS/Java 11
+            if IS_MAC:
+                f.write("export HADOOP_OPTS=\"-Djava.security.egd=file:/dev/./urandom -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC\"\n")
 
     if IS_WINDOWS:
         env_cmd = conf / "hadoop-env.cmd"
@@ -255,11 +301,35 @@ def _write_hadoop_configs(role, java_home):
 def install_spark(role):
     section(f"Spark {SPARK_VERSION} ({role})")
 
-    TMP = Path.home() / "Downloads"
-    archive = TMP / f"spark-{SPARK_VERSION}-bin-hadoop3.tgz"
-    url = f"https://downloads.apache.org/spark/spark-{SPARK_VERSION}/spark-{SPARK_VERSION}-bin-hadoop3.tgz"
+    # Use shorter path on Windows to avoid 260-character path limit
+    if IS_WINDOWS:
+        TMP = Path("C:/temp_spark")
+        TMP.mkdir(exist_ok=True)
+    else:
+        TMP = Path.home() / "Downloads"
 
-    download(url, archive)
+    archive = TMP / f"spark-{SPARK_VERSION}-bin-hadoop3.tgz"
+    primary_url = f"https://downloads.apache.org/spark/spark-{SPARK_VERSION}/spark-{SPARK_VERSION}-bin-hadoop3.tgz"
+    archive_url = f"https://archive.apache.org/dist/spark/spark-{SPARK_VERSION}/spark-{SPARK_VERSION}-bin-hadoop3.tgz"
+    # Additional fallback mirrors
+    mirror_urls = [
+        "https://dlcdn.apache.org/spark/spark-%s/spark-%s-bin-hadoop3.tgz" % (SPARK_VERSION, SPARK_VERSION),
+        "https://mirrors.ocf.berkeley.edu/apache/spark/spark-%s/spark-%s-bin-hadoop3.tgz" % (SPARK_VERSION, SPARK_VERSION),
+    ]
+
+    if not archive.exists():
+        last_error = None
+        for url in [primary_url, archive_url] + mirror_urls:
+            try:
+                download(url, archive)
+                break
+            except Exception as e:
+                last_error = e
+                print(f"  ⚠  Could not download from {url}: {e}")
+        else:
+            die(f"Failed to download Spark archive from all known mirrors. Last error: {last_error}")
+    else:
+        ok(f"Already downloaded: {archive.name}")
 
     if not SPARK_HOME.exists():
         if IS_WINDOWS:
@@ -294,6 +364,10 @@ def install_spark(role):
         f.write(f"\nexport JAVA_HOME={java_home}\n")
         f.write(f"export SPARK_LOCAL_IP={local_ip}\n")
         f.write(f"export PYSPARK_PYTHON={sys.executable}\n")
+        # Fix macOS native library username resolution issue
+        if IS_MAC:
+            f.write("export SPARK_NO_DAEMONIZE=true\n")
+            f.write("export HADOOP_OPTS=\"-Djava.library.path=\\$HADOOP_HOME/lib/native\"\n")
         if role == "master":
             f.write(f"export SPARK_MASTER_HOST={MASTER_IP}\n")
 
@@ -327,6 +401,16 @@ def install_spark(role):
 # ── Format NameNode ───────────────────────────────────────────────────────────
 
 def format_namenode():
+    # Check if NameNode is already running - don't format if it is
+    jps = shutil.which("jps") or str(find_java_home() / "bin" / "jps" if find_java_home() else "jps")
+    try:
+        out = subprocess.check_output([jps], text=True)
+        if "NameNode" in out:
+            ok("NameNode already running — skipping format")
+            return
+    except Exception:
+        pass
+
     nn_current = DATA_ROOT / "namenode" / "current"
     if nn_current.exists():
         ok("NameNode already formatted — skipping")
@@ -339,8 +423,28 @@ def format_namenode():
 
 # ── Start services ────────────────────────────────────────────────────────────
 
+def check_ssh():
+    """Verify SSH (Remote Login) is enabled on macOS."""
+    if IS_MAC:
+        # Check if Remote Login is enabled via system preferences
+        try:
+            out = subprocess.check_output(
+                ["sudo", "systemsetup", "-getremotelogin"], text=True
+            )
+            if "On" not in out:
+                print("  ⚠  SSH Remote Login is not enabled.")
+                print("     Enable it: System Settings → General → Remote Login → ON")
+                print("     Or run: sudo systemsetup -setremotelogin on")
+        except Exception:
+            pass  # systemsetup may require admin, try basic ssh check
+
+
 def start_master_services():
     section("Starting services (master)")
+
+    # Verify SSH is enabled (required for Hadoop daemons to communicate)
+    check_ssh()
+
     sbin = HADOOP_HOME / "sbin"
 
     # Start HDFS

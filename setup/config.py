@@ -12,11 +12,11 @@ import subprocess
 from pathlib import Path
 
 # ── ONLY THING YOU NEED TO CHANGE ─────────────────────────────────────────────
-MASTER_IP = "192.168.1.14"   # ← set to master laptop's LAN IP
+MASTER_IP = "10.36.100.191"   # ← set to master laptop's LAN IP
 # ──────────────────────────────────────────────────────────────────────────────
 
 HADOOP_VERSION = "3.3.6"
-SPARK_VERSION  = "3.5.1"
+SPARK_VERSION  = "3.5.3"
 JAVA_VERSION   = "11"
 
 OS = platform.system()   # "Darwin" | "Linux" | "Windows"
@@ -30,8 +30,9 @@ if IS_WINDOWS:
 else:
     INSTALL_ROOT = Path("/opt")
 
-HADOOP_HOME = Path("/opt/homebrew/Cellar/hadoop/3.5.0/libexec")
-SPARK_HOME  = INSTALL_ROOT / f"spark-{SPARK_VERSION}"
+# Downloaded Hadoop goes to INSTALL_ROOT, not hardcoded Homebrew path
+HADOOP_HOME = INSTALL_ROOT / f"hadoop-{HADOOP_VERSION}"
+SPARK_HOME  = INSTALL_ROOT / f"spark-{SPARK_VERSION}-bin-hadoop3"
 DATA_ROOT   = INSTALL_ROOT / "hadoop" / "hdfs"
 
 # Script extensions differ by OS
@@ -120,25 +121,35 @@ def find_java_home():
 
 
 def verify_java():
-    """Check Java 11 is available; print install instructions if not."""
+    """Check Java 11 or 17 is available; print install instructions if not."""
     try:
         out = subprocess.check_output(
             ["java", "-version"], stderr=subprocess.STDOUT, text=True
         )
-        if "11" in out or "17" in out:   # 17 is also fine
-            print(f"  ✓ Java: {out.splitlines()[0]}")
-            return True
+        # Parse version from output like "openjdk version "11.0.20.1" ..."
+        version_line = out.splitlines()[0]
+        # Extract major version number
+        import re
+        match = re.search(r'version\s+"(\d+)', version_line)
+        if match:
+            major = int(match.group(1))
+            if major in [11, 17]:
+                print(f"  ✓ Java: {version_line}")
+                return True
+            else:
+                print(f"  ✗ Java {major} found, but Java 11 or 17 required.")
+                print(f"     Current: {version_line}")
     except FileNotFoundError:
         pass
 
-    print("  ✗ Java 11 not found. Install it:")
+    print("  ✗ Java 11 or 17 not found. Install it:")
     if IS_MAC:
         print("    brew install openjdk@11")
         print("    Then add to shell: export PATH=$(brew --prefix openjdk@11)/bin:$PATH")
     elif IS_LINUX:
         print("    sudo apt-get install -y openjdk-11-jdk")
     elif IS_WINDOWS:
-        print("    Download from: https://adoptium.net  (Java 11, .msi installer)")
+        print("    Download from: https://adoptium.net  (Java 11 or 17, .msi installer)")
         print("    Or: winget install EclipseAdoptium.Temurin.11.JDK")
     return False
 
