@@ -229,18 +229,7 @@ footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border);
   </div>
 </div>
 <div class="content">
-<div class="part-divider" id="part0"><div class="part-label">Part 0</div><div class="part-title">Prerequisites</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
-Install these tools on <strong>every machine</strong> — both master and all workers. Do this once before running any setup script.
-</p>
-<div class="part-divider" id="part1"><div class="part-label">Part 1</div><div class="part-title">Master Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
-Run these steps on the laptop that will act as the cluster master. It coordinates all computation and hosts the API.
-</p>
-<div class="part-divider" id="part2"><div class="part-label">Part 2</div><div class="part-title">Worker Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
-Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.
-</p>
-<div class="part-divider" id="part3"><div class="part-label">Part 3</div><div class="part-title">Portability Test</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
-These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.
-</p>
+<div class="part-divider" id="part0"><div class="part-label">Part 0</div><div class="part-title">Prerequisites</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Install these tools on <strong>every machine</strong> — both master and all workers. Do this once before running any setup script.</p>
 <section id="s0-1"><h3><span class="sec-num">0.1</span>Install Python 3</h3>
         <p>The first prerequisite for all cluster nodes. Python runs the setup scripts and the PageRank job.</p>
         <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">brew install python3</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">sudo apt-get update
@@ -279,6 +268,7 @@ sudo systemctl start ssh</code></pre></div></div><div class="os-pane" data-os="w
 Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 # If needed
 install via Settings → Apps → Optional Features → Add OpenSSH Client</code></pre></div></div></div></section>
+<div class="part-divider" id="part1"><div class="part-label">Part 1</div><div class="part-title">Master Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Run these steps on the laptop that will act as the cluster master. It coordinates all computation and hosts the API.</p>
 <section id="s1-1"><h3><span class="sec-num">1.1</span>Find Your LAN IP</h3>
         <p>Your LAN IP is the address other machines on the same Wi-Fi will use to reach yours. It usually starts with <code>192.168.</code> or <code>10.</code>.</p>
         <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ipconfig getifaddr en0
@@ -449,6 +439,7 @@ echo &quot;API PID: $!
 Start-Job -ScriptBlock { python3 src/api.py } | Out-Null
 Write-Host 'API started in background'
 # To stop: Get-Job | Stop-Job</code></pre></div></div></div></section>
+<div class="part-divider" id="part2"><div class="part-label">Part 2</div><div class="part-title">Worker Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.</p>
 <section id="s2-1"><h3><span class="sec-num">2.1</span>Before You Start</h3>
         <p>The master node must be fully running before you set up any worker. Specifically:</p>
         <ul>
@@ -503,6 +494,7 @@ netsh advfirewall firewall add rule name=&quot;Hadoop-Spark Cluster&quot; dir=in
 9867
 8080
 9870</code></pre></div></div></div></section>
+<div class="part-divider" id="part3"><div class="part-label">Part 3</div><div class="part-title">Portability Test</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>
 <section id="s3-1"><h3><span class="sec-num">3.1</span>Check the Service Is Up</h3>
         <p>Before querying results, confirm the API process is alive.</p>
         <h4>Three ways to call <code>GET /health</code></h4>

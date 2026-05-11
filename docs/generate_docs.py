@@ -1122,32 +1122,31 @@ PART_MAPPINGS = {
 }
 
 
-def build_parts():
-    parts = []
-    seen = set()
+def build_content():
+    """Interleave part dividers with their sections — not all parts first."""
+    intros = {
+        "part0": "Install these tools on <strong>every machine</strong> — both master and all workers. Do this once before running any setup script.",
+        "part1": "Run these steps on the laptop that will act as the cluster master. It coordinates all computation and hosts the API.",
+        "part2": "Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.",
+        "part3": "These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.",
+    }
+
+    chunks = []
+    seen_parts = set()
     for section in SECTIONS:
         prefix = section["id"].split("-")[0]  # "s0", "s1", etc.
-        if prefix in seen:
-            continue
-        seen.add(prefix)
-        info = PART_MAPPINGS[prefix]
-        parts.append(f'<div class="part-divider" id="{info["id"]}"><div class="part-label">{info["label"]}</div><div class="part-title">{esc(info["title"])}</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">')
-        # Add intro text based on part
-        intros = {
-            "part0": "Install these tools on <strong>every machine</strong> — both master and all workers. Do this once before running any setup script.",
-            "part1": "Run these steps on the laptop that will act as the cluster master. It coordinates all computation and hosts the API.",
-            "part2": "Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.",
-            "part3": "These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.",
-        }
-        parts.append(intros[info["id"]])
-        parts.append("</p>")
-    return "\n".join(parts)
+        if prefix not in seen_parts:
+            seen_parts.add(prefix)
+            info = PART_MAPPINGS[prefix]
+            chunks.append(f'<div class="part-divider" id="{info["id"]}"><div class="part-label">{info["label"]}</div><div class="part-title">{esc(info["title"])}</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">{intros[info["id"]]}</p>')
+        content = parse_content(section["content"])
+        chunks.append(f'<section id="{section["id"]}"><h3><span class="sec-num">{section["num"]}</span>{esc(section["title"])}</h3>{content}</section>')
+    return "\n".join(chunks)
 
 
 def generate():
     nav_html = build_nav()
-    parts_html = build_parts()
-    sections_html = build_sections()
+    content_html = build_content()
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1190,8 +1189,7 @@ def generate():
   </div>
 </div>
 <div class="content">
-{parts_html}
-{sections_html}
+{content_html}
 </div>
 <footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; May 11, 2026</footer>
 </main>
