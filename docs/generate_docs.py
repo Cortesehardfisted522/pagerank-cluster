@@ -933,7 +933,7 @@ def render_os_tabs(tabs_data):
             panes.append(f'''<div class="os-pane" data-os="{os_name}"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">{code}</code></pre></div></div>''')
 
     tabs_html = "".join(
-        f'''<button class="os-tab" role="tab" data-os="{os}">{os.capitalize()}</button>'''
+        f'''<button class="os-tab" role="tab" data-os="{os}">{"macOS" if os == "macos" else os.capitalize()}</button>'''
         for os in ("macos", "linux", "windows")
         if tabs_data.get("mac" if os == "macos" else os)
     )
@@ -998,16 +998,47 @@ def parse_content(template):
             content = template[start_content:j]
             i = j + 2  # skip ]}
 
-            # Parse JSON-ish structure
-            tabs_data = {"mac": [], "linux": [], "windows": []}
+            # Parse {mac:[...]} {linux:[...]} {windows:[...]} blocks
             import re
-            for m in re.finditer(r'\{(\w+):\[(.*?)\]\}', content, re.DOTALL):
-                os_name = m.group(1)
-                lines_str = m.group(2)
-                lines = [l.strip().strip(',') for l in lines_str.split('\n') if l.strip()]
-                tabs_data[os_name] = lines
+            tabs_data = {"mac": [], "linux": [], "windows": []}
+            # Match each {key:[...]} by finding the matching ] for each [
+            pos = 0
+            while pos < len(content):
+                brace = content.find("{", pos)
+                if brace == -1:
+                    break
+                colon = content.find(":", brace)
+                bracket = content.find("[", colon)
+                if colon == -1 or bracket == -1:
+                    pos = brace + 1
+                    continue
+                key = content[brace + 1:colon]
+                if key not in tabs_data:
+                    pos = brace + 1
+                    continue
+                # Find matching ] for the [ at bracket
+                depth = 0
+                end = bracket
+                while end < len(content):
+                    if content[end] == "[":
+                        depth += 1
+                    elif content[end] == "]":
+                        depth -= 1
+                        if depth == 0:
+                            break
+                    end += 1
+                inner = content[bracket + 1:end]
+                # Split by comma, strip quotes
+                lines = []
+                for part in inner.split(","):
+                    s = part.strip().strip('"')
+                    if s:
+                        lines.append(s)
+                tabs_data[key] = lines
+                pos = end + 1
 
             html_parts.append(render_os_tabs(tabs_data))
+            i = j + 2  # advance past ]}
 
         elif start2 == earliest:
             end = template.find("}", i + 6)
