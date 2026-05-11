@@ -182,35 +182,35 @@ footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border);
     <div class="sidebar-title">PageRank Cluster Manual</div>
   </div>
   <div class="toc">
-    <div class="toc-part">Part 0 &mdash; Prerequisites</div>
-    <a class="toc-link" href="#s0-1">0.1 Install Python</a>
-    <a class="toc-link" href="#s0-2">0.2 Install Java</a>
-    <a class="toc-link" href="#s0-3">0.3 Install Git</a>
-    <a class="toc-link" href="#s0-4">0.4 Enable SSH</a>
-    <div class="toc-part">Part 1 &mdash; Master Setup</div>
-    <a class="toc-link" href="#s1-1">1.1 Find Your LAN IP</a>
-    <a class="toc-link" href="#s1-2">1.2 Configure</a>
-    <a class="toc-link" href="#s1-3">1.3 Run Master Setup</a>
-    <a class="toc-link" href="#s1-4">1.4 Verify in Browser</a>
-    <a class="toc-link" href="#s1-5">1.5 Load the Dataset</a>
-    <a class="toc-link" href="#s1-6">1.6 Run PageRank</a>
-    <a class="toc-link" href="#s1-7">1.7 Start the API</a>
-    <div class="toc-part">Part 2 &mdash; Worker Setup</div>
-    <a class="toc-link" href="#s2-1">2.1 Before You Start</a>
-    <a class="toc-link" href="#s2-2">2.2 Clone and Configure</a>
-    <a class="toc-link" href="#s2-3">2.3 Run Worker Setup</a>
-    <a class="toc-link" href="#s2-4">2.4 Register with Master</a>
-    <a class="toc-link" href="#s2-5">2.5 Common Failures</a>
-    <div class="toc-part">Part 3 &mdash; Portability Test</div>
-    <a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>
-    <a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>
-    <a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>
-    <a class="toc-link" href="#s3-4">3.4 Top N Nodes</a>
-    <a class="toc-link" href="#s3-5">3.5 Outgoing Edges (Neighbors)</a>
-    <a class="toc-link" href="#s3-6">3.6 Incoming Edges (Influencers)</a>
-    <a class="toc-link" href="#s3-7">3.7 Job Statistics</a>
-    <a class="toc-link" href="#s3-8">3.8 Background Rerun</a>
-    <a class="toc-link" href="#s3-9">3.9 If Something Fails</a>
+<div class="toc-part">Part 0 — Prerequisites</div>
+<a class="toc-link" href="#s0-1">0.1 Install Python</a>
+<a class="toc-link" href="#s0-2">0.2 Install Java</a>
+<a class="toc-link" href="#s0-3">0.3 Install Git</a>
+<a class="toc-link" href="#s0-4">0.4 Enable SSH</a>
+<div class="toc-part">Part 1 — Master Setup</div>
+<a class="toc-link" href="#s1-1">1.1 Find Your LAN IP</a>
+<a class="toc-link" href="#s1-2">1.2 Configure</a>
+<a class="toc-link" href="#s1-3">1.3 Run Master Setup</a>
+<a class="toc-link" href="#s1-4">1.4 Verify in Browser</a>
+<a class="toc-link" href="#s1-5">1.5 Load the Dataset</a>
+<a class="toc-link" href="#s1-6">1.6 Run PageRank</a>
+<a class="toc-link" href="#s1-7">1.7 Start the API</a>
+<div class="toc-part">Part 2 — Worker Setup</div>
+<a class="toc-link" href="#s2-1">2.1 Before You Start</a>
+<a class="toc-link" href="#s2-2">2.2 Clone and Configure</a>
+<a class="toc-link" href="#s2-3">2.3 Run Worker Setup</a>
+<a class="toc-link" href="#s2-4">2.4 Register with Master</a>
+<a class="toc-link" href="#s2-5">2.5 Common Failures</a>
+<div class="toc-part">Part 3 — Portability Test</div>
+<a class="toc-link" href="#s3-1">3.1 Check Service is Up</a>
+<a class="toc-link" href="#s3-2">3.2 Query Top 5 Results</a>
+<a class="toc-link" href="#s3-3">3.3 Query a Specific Node</a>
+<a class="toc-link" href="#s3-4">3.4 Top N Nodes</a>
+<a class="toc-link" href="#s3-5">3.5 Outgoing Edges (Neighbors)</a>
+<a class="toc-link" href="#s3-6">3.6 Incoming Edges (Influencers)</a>
+<a class="toc-link" href="#s3-7">3.7 Job Statistics</a>
+<a class="toc-link" href="#s3-8">3.8 Background Rerun</a>
+<a class="toc-link" href="#s3-9">3.9 If Something Fails</a>
   </div>
 </nav>
 <main class="main">
@@ -229,65 +229,80 @@ footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border);
   </div>
 </div>
 <div class="content">
-<div class="part-divider" id="part0"><div class="part-label">Part 0</div><div class="part-title">Prerequisites</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Install these tools on <strong>every machine</strong> &mdash; both master and all workers. Do this once before running any setup script.</p><section id="s0-1"><h3><span class="sec-num">0.1</span>Install Python 3</h3><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">brew install python3</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">sudo apt-get update
-sudo apt-get install -y python3 python3-pip</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell"># Using winget (comes with Windows 10/11)
-winget install Python.Python.3.12
-# Or download from: https://python.org</code></pre></div></div></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Verify Python</strong><p>Run <code>python3 --version</code> — should show Python 3.8 or higher.</p></div></div><h4>Step 2 &mdash; Install Java</h4><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">brew install openjdk@17
-
-# Add Java to your PATH permanently:
-echo 'export PATH="$(brew --prefix openjdk@17)/bin:$PATH"' >> ~/.zprofile
-export PATH="$(brew --prefix openjdk@17)/bin:$PATH"</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">sudo apt-get update
-sudo apt-get install -y openjdk-17-jdk
-
-# Set JAVA_HOME:
-echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> ~/.bashrc
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">winget install EclipseAdoptium.Temurin.17.JDK --silent
-
-# After install, set JAVA_HOME in PowerShell:
-$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.11.9-hotspot"
-# Or download from: https://adoptium.net</code></pre></div></div></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Verify Java</strong><p>Run <code>java -version</code> — should show <em>11</em> or <em>17</em>. Java 8 and Java 21+ cause problems.</p></div></div><h4>Step 3 &mdash; Install Git</h4><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">brew install git</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">sudo apt-get update
-sudo apt-get install -y git</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">winget install Git.Git --silent
-# Or download from: https://git-scm.com</code></pre></div></div></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Verify Git</strong><p>Run <code>git --version</code> — should show <em>2.x.x</em>.</p></div></div><h4>Step 4 &mdash; Enable SSH</h4><p>Hadoop daemons communicate between nodes using SSH. Enable Remote Login on your machine:</p><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Option 1: GUI — System Settings → General → Remote Login → ON
-
-# Option 2: Command line (requires admin password):
-sudo systemsetup -setremotelogin on
-
-# Verify:
-sudo systemsetup -getremotelogin</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Most Linux distros have SSH pre-installed. Verify it's running:
-which ssh
-sudo systemctl enable ssh
-sudo systemctl start ssh</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell"># Windows 10/11 has OpenSSH client built-in. Verify:
-Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
-
-# If needed, install via Settings → Apps → Optional Features → Add OpenSSH Client</code></pre></div></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>SSH is required</strong><p>Hadoop's start scripts use SSH to communicate between nodes. Without SSH enabled, the cluster will fail to start. This is a common issue on fresh macOS machines — macOS does not enable it by default.</p></div></div></section><section id="s1-1"><h3><span class="sec-num">1.1</span>Find Your LAN IP</h3><p>Your LAN IP is the address other machines on the same Wi-Fi will use to reach yours. It usually starts with <code>192.168.</code> or <code>10.</code>.</p><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ipconfig getifaddr en0
-# Expected output example:
-# 192.168.1.14</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hostname -I | awk '{print $1}'
-# Expected output example:
-# 192.168.1.14</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">(Get-NetIPAddress -AddressFamily IPv4 |
-  Where-Object { $_.IPAddress -like '192.168.*' }).IPAddress
-# Expected output example:
-# 192.168.1.14</code></pre></div></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>Can't find your IP?</strong><p>Make sure your machine is connected to the same Wi-Fi as the other nodes. Ethernet connections may show up on <code>en1</code> (macOS) or <code>eth0</code> (Linux) instead.</p></div></div></section><section id="s1-3"><h3><span class="sec-num">1.3</span>Configure</h3><p>Open <code>setup/config.py</code>. There is exactly one line you need to change &mdash; <code>MASTER_IP</code>. Everything else is auto-detected.</p><p><strong>Before</strong> (the default placeholder):</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-python">MASTER_IP = "192.168.1.14"   # set to master laptop's LAN IP</code></pre></div><p><strong>After</strong> (your actual LAN IP from Section 1.1):</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-python">MASTER_IP = "192.168.1.42"   # your actual LAN IP here</code></pre></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Set this before running anything</strong><p>Every setup script imports <code>config.py</code>. If <code>MASTER_IP</code> is wrong, Hadoop and Spark will start but workers will be unable to connect &mdash; and the error messages won't point here.</p></div></div><p>Verify the config loads cleanly:</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/config.py</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>OS          : Darwin
+<div class="part-divider" id="part0"><div class="part-label">Part 0</div><div class="part-title">Prerequisites</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
+Install these tools on <strong>every machine</strong> — both master and all workers. Do this once before running any setup script.
+</p>
+<div class="part-divider" id="part1"><div class="part-label">Part 1</div><div class="part-title">Master Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
+Run these steps on the laptop that will act as the cluster master. It coordinates all computation and hosts the API.
+</p>
+<div class="part-divider" id="part2"><div class="part-label">Part 2</div><div class="part-title">Worker Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
+Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.
+</p>
+<div class="part-divider" id="part3"><div class="part-label">Part 3</div><div class="part-title">Portability Test</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">
+These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.
+</p>
+<section id="s0-1"><h3><span class="sec-num">0.1</span>Install Python 3</h3>
+        <p>The first prerequisite for all cluster nodes. Python runs the setup scripts and the PageRank job.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;brew install python3&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;sudo apt-get update&quot;,&quot;sudo apt-get install -y python3 python3-pip&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Using winget (comes with Windows 10/11)&quot;,&quot;winget install Python.Python.3.12&quot;,&quot;# Or download from: https://python.org&quot;</code></pre></div></div></div></section>
+<section id="s0-2"><h3><span class="sec-num">0.2</span>Install Java</h3>
+        <p>Spark and Hadoop run on the Java Virtual Machine. Install OpenJDK 11 or 17 — Java 8 and 21+ cause compatibility issues.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;brew install openjdk@17&quot;,&quot;&quot;,&quot;# Add Java to your PATH permanently:&quot;,&quot;echo 'export PATH=&quot;$(brew --prefix openjdk@17)/bin:$PATH&quot;' &gt;&gt; ~/.zprofile&quot;,&quot;export PATH=&quot;$(brew --prefix openjdk@17)/bin:$PATH&quot;&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;sudo apt-get update&quot;,&quot;sudo apt-get install -y openjdk-17-jdk&quot;,&quot;&quot;,&quot;# Set JAVA_HOME:&quot;,&quot;echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' &gt;&gt; ~/.bashrc&quot;,&quot;export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;winget install EclipseAdoptium.Temurin.17.JDK --silent&quot;,&quot;&quot;,&quot;# After install, set JAVA_HOME in PowerShell:&quot;,&quot;$env:JAVA_HOME = &quot;C:\Program Files\Eclipse Adoptium\jdk-17.0.11.9-hotspot&quot;&quot;,&quot;# Or download from: https://adoptium.net&quot;</code></pre></div></div></div></section>
+<section id="s0-3"><h3><span class="sec-num">0.3</span>Install Git</h3>
+        <p>Git is used to clone the cluster repository onto each machine.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;brew install git&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;sudo apt-get update&quot;,&quot;sudo apt-get install -y git&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;winget install Git.Git --silent&quot;,&quot;# Or download from: https://git-scm.com&quot;</code></pre></div></div></div></section>
+<section id="s0-4"><h3><span class="sec-num">0.4</span>Enable SSH</h3>
+        <p>Hadoop daemons communicate between nodes using SSH. Enable Remote Login on your machine:</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Option 1: GUI — System Settings → General → Remote Login → ON&quot;,&quot;&quot;,&quot;# Option 2: Command line (requires admin password):&quot;,&quot;sudo systemsetup -setremotelogin on&quot;,&quot;&quot;,&quot;# Verify:&quot;,&quot;sudo systemsetup -getremotelogin&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Most Linux distros have SSH pre-installed. Verify it's running:&quot;,&quot;which ssh&quot;,&quot;sudo systemctl enable ssh&quot;,&quot;sudo systemctl start ssh&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Windows 10/11 has OpenSSH client built-in. Verify:&quot;,&quot;Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'&quot;,&quot;&quot;,&quot;# If needed, install via Settings → Apps → Optional Features → Add OpenSSH Client&quot;</code></pre></div></div></div></section>
+<section id="s1-1"><h3><span class="sec-num">1.1</span>Find Your LAN IP</h3>
+        <p>Your LAN IP is the address other machines on the same Wi-Fi will use to reach yours. It usually starts with <code>192.168.</code> or <code>10.</code>.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ipconfig getifaddr en0&quot;,&quot;# Expected output example:&quot;,&quot;# 192.168.1.14&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hostname -I | awk '{print $1}'&quot;,&quot;# Expected output example:&quot;,&quot;# 192.168.1.14&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;(Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -like '192.168.*' }).IPAddress&quot;,&quot;# Expected output example:&quot;,&quot;# 192.168.1.14&quot;</code></pre></div></div></div></section>
+<section id="s1-2"><h3><span class="sec-num">1.2</span>Configure</h3>
+        <p>Open <code>setup/config.py</code>. There is exactly one line you need to change — <code>MASTER_IP</code>. Everything else is auto-detected.</p>
+        <p><strong>Before</strong> (the default placeholder):</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-python">Master_IP = &quot;192.168.1.14&quot;   # set to master laptop's LAN IP</code></pre></div>
+        <p><strong>After</strong> (your actual LAN IP from Section 1.1):</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-python">MASTER_IP = &quot;192.168.1.42&quot;   # your actual LAN IP here</code></pre></div>
+        <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Set this before running anything</strong>Every setup script imports <code>config.py</code>. If <code>MASTER_IP</code> is wrong, Hadoop and Spark will start but workers will be unable to connect — and the error messages won't point here.</div></div>
+        <p>Verify the config loads cleanly:</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/config.py</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>OS          : Darwin
 Local IP    : 192.168.1.42
 MASTER_IP   : 192.168.1.42
 JAVA_HOME   : /opt/homebrew/opt/openjdk@17
 HADOOP_HOME : /opt/hadoop-3.3.6
 SPARK_HOME  : /opt/spark-3.5.3-bin-hadoop3
-  [ok] Java: openjdk version "17.0.11" 2024-01-16</pre></div></div></section><section id="s1-3"><h3><span class="sec-num">1.3</span>Run Master Setup</h3><p>This single command installs Hadoop (a distributed filesystem) and Spark (a distributed computation engine), formats the filesystem, and starts all required services.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/setup_node.py --role master</code></pre></div><p>The script prints phases as it runs. Here is what each one means:</p><table><thead><tr><th>Phase printed</th><th>What is happening</th></tr></thead><tbody><tr><td><code>-- Java --</code></td><td>Checks Java is present; installs if missing.</td></tr><tr><td><code>-- Python dependencies --</code></td><td>Installs <code>pyspark</code>, <code>flask</code>, <code>requests</code> via pip.</td></tr><tr><td><code>-- Hadoop 3.3.6 (master) --</code></td><td>Downloads ~650 MB Hadoop archive and extracts it. Writes XML config files pointing at your <code>MASTER_IP</code>.</td></tr><tr><td><code>-- Spark 3.5.3 (master) --</code></td><td>Downloads ~300 MB Spark archive and extracts it. Writes <code>spark-defaults.conf</code>.</td></tr><tr><td><code>-- Formatting NameNode --</code></td><td>Initialises the HDFS metadata directory. Only happens once; skipped on re-runs.</td></tr><tr><td><code>-- Starting services (master) --</code></td><td>Launches NameNode, DataNode, SecondaryNameNode, and Spark Master as background daemons.</td></tr><tr><td><code>-- Verification --</code></td><td>Runs <code>jps</code> to list running Java processes and confirms all four are present.</td></tr></tbody></table><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>This takes a while the first time</strong><p>Downloading Hadoop + Spark is about 1 GB total. On a fast connection expect 3-5 minutes; on a slow one, up to 20. Subsequent runs skip the download.</p></div></div><h4>After it finishes: check with <code>jps</code></h4><p><code>jps</code> &mdash; the Java Virtual Machine Process Status tool &mdash; lists every running Java process. After master setup you should see exactly four:</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output &mdash; all four must appear</strong><pre>12345 NameNode
+  [ok] Java: openjdk version "17.0.11" 2024-01-16</pre></div></div>
+        </section>
+<section id="s1-3"><h3><span class="sec-num">1.3</span>Run Master Setup</h3>
+        <p>This single command installs Hadoop (a distributed filesystem) and Spark (a distributed computation engine), formats the filesystem, and starts all required services.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/setup_node.py --role master</code></pre></div>
+        <p>The script prints phases as it runs. Here is what each one means:</p>
+        <table><thead><tr><th>Phase printed</th><th>What is happening</th></tr></thead><tbody><tr><td><code>-- Java --</code></td><td>Checks Java is present; installs if missing.</td></tr><tr><td><code>-- Python dependencies --</code></td><td>Installs <code>pyspark</code>, <code>flask</code>, <code>requests</code> via pip.</td></tr><tr><td><code>-- Hadoop 3.3.6 (master) --</code></td><td>Downloads ~650 MB Hadoop archive and extracts it. Writes XML config files pointing at your <code>MASTER_IP</code>.</td></tr><tr><td><code>-- Spark 3.5.3 (master) --</code></td><td>Downloads ~300 MB Spark archive and extracts it. Writes <code>spark-defaults.conf</code>.</td></tr><tr><td><code>-- Formatting NameNode --</code></td><td>Initialises the HDFS metadata directory. Only happens once; skipped on re-runs.</td></tr><tr><td><code>-- Starting services (master) --</code></td><td>Launches NameNode, DataNode, SecondaryNameNode, and Spark Master as background daemons.</td></tr><tr><td><code>-- Verification --</code></td><td>Runs <code>jps</code> to list running Java processes and confirms all four are present.</td></tr></tbody></table>}
+        <div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>This takes a while the first time</strong>Downloading Hadoop + Spark is about 1 GB total. On a fast connection expect 3-5 minutes; on a slow one, up to 20. Subsequent runs skip the download.</div></div>
+        <h4>After it finishes: check with <code>jps</code></h4>
+        <p><code>jps</code> — the Java Virtual Machine Process Status tool — lists every running Java process. After master setup you should see exactly four:</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output — all four must appear</strong><pre>12345 NameNode
 12346 DataNode
 12347 SecondaryNameNode
 12348 Master
-12349 Jps</pre></div></div><p>If a process is missing, here is where to look:</p><table><thead><tr><th>Missing process</th><th>What to check</th></tr></thead><tbody><tr><td><code>NameNode</code></td><td>Check Hadoop logs in <code>$HADOOP_HOME/logs/</code>. Common cause: a NameNode is already running (stop it with <code>stop-dfs.sh</code>), or wrong <code>JAVA_HOME</code> in <code>hadoop-env.sh</code>.</td></tr><tr><td><code>DataNode</code></td><td>Usually starts after NameNode. If NameNode is up but DataNode isn't, check for port 9000 conflicts: <code>lsof -i :9000</code>.</td></tr><tr><td><code>SecondaryNameNode</code></td><td>Non-critical for this lab. Its absence won't block PageRank.</td></tr><tr><td><code>Master</code> (Spark)</td><td>Check Spark logs in <code>$SPARK_HOME/logs/</code>.</td></tr></tbody></table></section><section id="s1-4"><h3><span class="sec-num">1.4</span>Verify in Browser</h3><p>Two web UIs start automatically. Open them to confirm the cluster is healthy.</p><h4>Spark UI &mdash; <code>http://192.168.1.14:8080</code></h4><p>You should see the Spark Master dashboard. Look for: <strong>Status: ALIVE</strong> and at least one worker listed under &quot;Workers&quot; (the master itself counts as a worker at this stage).</p><h4>HDFS NameNode UI &mdash; <code>http://192.168.1.14:9870</code></h4><p>You should see the Hadoop NameNode overview. Look for: <strong>Live Nodes: 1</strong> (or more once workers join) and <strong>Safe Mode: OFF</strong>.</p><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>If the browser just times out</strong><p>The ports are blocked by a firewall. Open them:</p></div></div><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># macOS — allow Java through the firewall (or disable it temporarily):
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
-
-# Linux — open the required ports:
-sudo ufw allow 8080/tcp
-sudo ufw allow 9870/tcp
-sudo ufw allow 9000/tcp
-sudo ufw allow 7077/tcp
-sudo ufw allow 5000/tcp
-
-# Windows — open via PowerShell (as Administrator):
-netsh advfirewall firewall add rule name="Hadoop Spark Cluster" dir=in action=allow protocol=TCP localport=8080,9870,9000,7077,5000</code></pre></div></div></section><section id="s1-5"><h3><span class="sec-num">1.5</span>Load the Dataset</h3><p>The dataset is the Stanford Web-Google graph &mdash; a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p><h4>Step 1 &mdash; Download</h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/download_dataset.py</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
+12349 Jps</pre></div></div>
+        <p>If a process is missing, here is where to look:</p>
+        <table><thead><tr><th>Missing process</th><th>What to check</th></tr></thead><tbody><tr><td><code>NameNode</code></td><td>Check Hadoop logs in <code>$HADOOP_HOME/logs/</code>. Common cause: a NameNode is already running (stop it with <code>stop-dfs.sh</code>), or wrong <code>JAVA_HOME</code> in <code>hadoop-env.sh</code>.</td></tr><tr><td><code>DataNode</code></td><td>Usually starts after NameNode. If NameNode is up but DataNode isn't, check for port 9000 conflicts: <code>lsof -i :9000</code>.</td></tr><tr><td><code>SecondaryNameNode</code></td><td>Non-critical for this lab. Its absence won't block PageRank.</td></tr><tr><td><code>Master</code> (Spark)</td><td>Check Spark logs in <code>$SPARK_HOME/logs/</code>.</td></tr></tbody></table>}
+        </section>
+<section id="s1-4"><h3><span class="sec-num">1.4</span>Verify in Browser</h3>
+        <p>Two web UIs start automatically. Open them to confirm the cluster is healthy.</p>
+        <h4>Spark UI — <code>http://192.168.1.14:8080</code></h4>
+        <p>You should see the Spark Master dashboard. Look for: <strong>Status: ALIVE</strong> and at least one worker listed under "Workers" (the master itself counts as a worker at this stage).</p>
+        <h4>HDFS NameNode UI — <code>http://192.168.1.14:9870</code></h4>
+        <p>You should see the Hadoop NameNode overview. Look for: <strong>Live Nodes: 1</strong> (or more once workers join) and <strong>Safe Mode: OFF</strong>.</p>
+        <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>If the browser just times out</strong>The ports are blocked by a firewall. Open them:</div></div>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# macOS — allow Java through the firewall (or disable it temporarily):&quot;,&quot;sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off&quot;,&quot;&quot;,&quot;# Linux — open the required ports:&quot;,&quot;sudo ufw allow 8080/tcp&quot;,&quot;sudo ufw allow 9870/tcp&quot;,&quot;sudo ufw allow 9000/tcp&quot;,&quot;sudo ufw allow 7077/tcp&quot;,&quot;sudo ufw allow 5000/tcp&quot;,&quot;&quot;,&quot;# Windows — open via PowerShell (as Administrator):&quot;,&quot;netsh advfirewall firewall add rule name=&quot;Hadoop Spark Cluster&quot; dir=in action=allow protocol=TCP localport=8080,9870,9000,7077,5000&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# macOS — allow Java through the firewall (or disable it temporarily):&quot;,&quot;sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off&quot;,&quot;&quot;,&quot;# Linux — open the required ports:&quot;,&quot;sudo ufw allow 8080/tcp&quot;,&quot;sudo ufw allow 9870/tcp&quot;,&quot;sudo ufw allow 9000/tcp&quot;,&quot;sudo ufw allow 7077/tcp&quot;,&quot;sudo ufw allow 5000/tcp&quot;,&quot;&quot;,&quot;# Windows — open via PowerShell (as Administrator):&quot;,&quot;netsh advfirewall firewall add rule name=&quot;Hadoop Spark Cluster&quot; dir=in action=allow protocol=TCP localport=8080,9870,9000,7077,5000&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# macOS — allow Java through the firewall (or disable it temporarily):&quot;,&quot;sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off&quot;,&quot;&quot;,&quot;# Linux — open the required ports:&quot;,&quot;sudo ufw allow 8080/tcp&quot;,&quot;sudo ufw allow 9870/tcp&quot;,&quot;sudo ufw allow 9000/tcp&quot;,&quot;sudo ufw allow 7077/tcp&quot;,&quot;sudo ufw allow 5000/tcp&quot;,&quot;&quot;,&quot;# Windows — open via PowerShell (as Administrator):&quot;,&quot;netsh advfirewall firewall add rule name=&quot;Hadoop Spark Cluster&quot; dir=in action=allow protocol=TCP localport=8080,9870,9000,7077,5000&quot;</code></pre></div></div></div></section>
+<section id="s1-5"><h3><span class="sec-num">1.5</span>Load the Dataset</h3>
+        <p>The dataset is the Stanford Web-Google graph — a snapshot of 875,713 web pages and 5,105,039 hyperlinks between them, collected by Google in 2002. HDFS (the Hadoop Distributed File System) stores data across all nodes so Spark can read it in parallel.</p>
+        <h4>Step 1 — Download</h4>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/download_dataset.py</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><pre>Downloading from https://snap.stanford.edu/data/web-Google.txt.gz ...
   [####################] 100%
 Extracting...
 
@@ -295,13 +310,19 @@ Extracting...
   Nodes: 875,713
   Edges: 5,105,039
 
-Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div><h4>Step 2 &mdash; Push to HDFS</h4><p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">hdfs dfs -put data/web-Google.txt /pagerank/input/</code></pre></div></div></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p>No output means success. Verify the file landed:</p><pre>hdfs dfs -ls /pagerank/input/
-
--rw-r--r--   2 user supergroup  804298888 2024-05-09 /pagerank/input/web-Google.txt</pre></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>Already in HDFS?</strong><p>If you re-run, use <code>hdfs dfs -put -f</code> (force overwrite) to replace an existing file.</p></div></div></section><section id="s1-6"><h3><span class="sec-num">1.6</span>Run PageRank</h3><p>This submits the PageRank job to Spark. <code>spark-submit</code> packages your Python script and sends it to the Spark Master, which distributes the computation across all connected workers.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">spark-submit \
+Next: hdfs dfs -put data/web-Google.txt /pagerank/input/</pre></div></div>
+        <h4>Step 2 — Push to HDFS</h4>
+        <p><code>hdfs dfs -put</code> copies a local file into the distributed filesystem so all workers can access it.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hdfs dfs -put data/web-Google.txt /pagerank/input/&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hdfs dfs -put data/web-Google.txt /pagerank/input/&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hdfs dfs -put data/web-Google.txt /pagerank/input/&quot;</code></pre></div></div></div></section>
+<section id="s1-6"><h3><span class="sec-num">1.6</span>Run PageRank</h3>
+        <p>This submits the PageRank job to Spark. <code>spark-submit</code> packages your Python script and sends it to the Spark Master, which distributes the computation across all connected workers.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">spark-submit \
   --master spark://192.168.1.14:7077 \
   --executor-memory 2g \
   --driver-memory 1g \
-  src/pagerank.py 10</code></pre></div><p>The number <code>10</code> is the iteration count. During the run you will see lines like:</p><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Iteration output</strong><pre>  Iteration  1/10  12.3s
+  src/pagerank.py 10</code></pre></div>
+        <p>The number <code>10</code> is the iteration count. During the run you will see lines like:</p>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Iteration output</strong><pre>  Iteration  1/10  12.3s
   Iteration  2/10  11.8s
   Iteration  3/10  11.5s
   ...
@@ -319,7 +340,16 @@ Collecting results...
   #5  node     537039  ->  383.90912550
 =======================================================
 
-[ok] Done in 118.4s</pre></div></div><p>Each iteration line shows the wall-clock time for one pass over the graph. Times should be roughly stable; a sudden spike usually means a worker disconnected.</p><h4>Where results are saved</h4><table><thead><tr><th>File</th><th>Contents</th></tr></thead><tbody><tr><td><code>data/top5.json</code></td><td>Top 5 nodes &mdash; this is what the API serves.</td></tr><tr><td><code>data/results.json</code></td><td>Top 1000 nodes with scores, for <code>/node/&lt;id&gt;</code> and <code>/top/&lt;n&gt;</code> queries.</td></tr><tr><td><code>data/graph.json</code></td><td>Full adjacency list &mdash; every node and its outgoing neighbors. Used by <code>/neighbors</code> and <code>/influencedby</code>.</td></tr><tr><td><code>data/meta.json</code></td><td>Job metadata &mdash; dataset name, node/edge counts, iterations, damping factor, top node, completion timestamp. Used by <code>/stats</code>.</td></tr><tr><td><code>data/pagerank_output/part-00000</code></td><td>All nodes, tab-separated: <code>nodeId\tscore</code>.</td></tr></tbody></table></section><section id="s1-7"><h3><span class="sec-num">1.7</span>Start the API</h3><p>The REST API is a small Flask server that reads <code>data/top5.json</code> and serves it to other groups over HTTP.</p><h4>Verify locally first</h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/api.py</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected startup output</strong><pre>==================================================
+[ok] Done in 118.4s</pre></div></div>
+        <p>Each iteration line shows the wall-clock time for one pass over the graph. Times should be roughly stable; a sudden spike usually means a worker disconnected.</p>
+        <h4>Where results are saved</h4>
+        <table><thead><tr><th>File</th><th>Contents</th></tr></thead><tbody><tr><td><code>data/top5.json</code></td><td>Top 5 nodes — this is what the API serves.</td></tr><tr><td><code>data/results.json</code></td><td>Top 1000 nodes with scores, for <code>/node/&lt;id&gt;</code> and <code>/top/&lt;n&gt;</code> queries.</td></tr><tr><td><code>data/graph.json</code></td><td>Full adjacency list — every node and its outgoing neighbors. Used by <code>/neighbors</code> and <code>/influencedby</code>.</td></tr><tr><td><code>data/meta.json</code></td><td>Job metadata — dataset name, node/edge counts, iterations, damping factor, top node, completion timestamp. Used by <code>/stats</code>.</td></tr><tr><td><code>data/pagerank_output/part-00000</code></td><td>All nodes, tab-separated: <code>nodeId\tscreen</code>.</td></tr></tbody></table>}
+        </section>
+<section id="s1-7"><h3><span class="sec-num">1.7</span>Start the API</h3>
+        <p>The REST API is a small Flask server that reads <code>data/top5.json</code> and serves it to other groups over HTTP.</p>
+        <h4>Verify locally first</h4>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 src/api.py</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected startup output</strong><pre>==================================================
   Group 03 - PageRank Portability API
   http://192.168.1.14:5000
 
@@ -334,76 +364,88 @@ Collecting results...
   GET  /health            -> status check
 
   [ok] Results loaded -- top node: 41909 (445.71778597)
-==================================================</pre></div></div><p>In a second terminal, confirm it responds:</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://localhost:5000/health</code></pre></div><h4>Run it in the background (so you can close the terminal)</h4><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">nohup python3 src/api.py &gt; /tmp/api.log 2&gt;&amp;1 &amp;
-echo "API PID: $!"
-# To stop it later:
-# kill $(lsof -ti :5000)</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">nohup python3 src/api.py &gt; /tmp/api.log 2&gt;&amp;1 &amp;
-echo "API PID: $!"
-# To stop it later:
-# kill $(lsof -ti :5000)</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell"># PowerShell -- start as a background job
-Start-Job -ScriptBlock { python3 src/api.py } | Out-Null
-Write-Host 'API started in background'
-# To stop: Get-Job | Stop-Job</code></pre></div></div></div><h4>Three ways to verify it works</h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Option 1 -- curl
-curl http://localhost:5000/health
-
-# Option 2 -- Python (works on all three OS)
-python3 -c "import urllib.request, json; print(json.loads(urllib.request.urlopen('http://localhost:5000/health').read()))"
-
-# Option 3 -- Browser
-# Open: http://localhost:5000/health</code></pre></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>macOS port 5000 conflict</strong><p>macOS Monterey+ reserves port 5000 for AirPlay Receiver. If <code>curl</code> returns <em>connection refused</em>, go to <strong>System Settings &rarr; AirDrop &amp; Handoff</strong> and turn off AirPlay Receiver. Then restart the API.</p></div></div></section><div class="part-divider" id="part2"><div class="part-label">Part 2</div><div class="part-title">Worker Setup</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">Run these steps on every laptop that will join the cluster as a worker. The master must already be running (Part 1 complete) before you start here.</p>
-<section id="s2-1"><h3><span class="sec-num">2.1</span>Before You Start</h3><p>The master node must be fully running before you set up any worker. Specifically:</p><ul>  <li>Section 1.3 must be complete &mdash; <code>jps</code> on the master shows all four processes.</li>  <li>You need the master's LAN IP address from Section 1.1.</li>  <li>Both machines must be on the same Wi-Fi or wired LAN.</li></ul><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 3 192.168.1.14
-# All 3 packets should receive a reply.</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 3 192.168.1.14
-# All 3 packets should receive a reply.</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">ping -n 3 192.168.1.14
-# All 3 packets should receive a reply.</code></pre></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Different Wi-Fi networks</strong><p>University campuses often have network isolation between clients on the same SSID. If ping fails even though you're on the same network, use a personal hotspot or a wired switch shared between the machines.</p></div></div></section><section id="s2-2"><h3><span class="sec-num">2.2</span>Clone and Configure</h3><h4>Clone the repository on the worker machine</h4><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">git clone https://github.com/munimx/pagerank-cluster
-cd pagerank-cluster</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">git clone https://github.com/munimx/pagerank-cluster
-cd pagerank-cluster</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">git clone https://github.com/munimx/pagerank-cluster
-cd pagerank-cluster</code></pre></div></div></div><h4>Set <code>MASTER_IP</code> in <code>setup/config.py</code></h4><p>Open the file and change the one line:</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-python">MASTER_IP = "192.168.1.42"   # the MASTER's LAN IP, NOT your own</code></pre></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Common mistake &mdash; setting MASTER_IP to your own IP on a worker machine</strong><p>On the <strong>worker</strong>, <code>MASTER_IP</code> must be the IP of the <strong>master laptop</strong>, not the worker's own IP. If you set it to your own IP, the worker will try to connect to itself as a master &mdash; and fail silently. Double-check before running setup.</p></div></div></section><section id="s2-3"><h3><span class="sec-num">2.3</span>Run Worker Setup</h3><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/setup_node.py --role worker</code></pre></div><p>This installs Java, Python dependencies, Hadoop, and Spark &mdash; same as the master, but starts only the DataNode and Spark Worker daemons (not the NameNode or Spark Master).</p><h4>After it finishes: check with <code>jps</code></h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output on the worker &mdash; exactly these two</strong><pre>23456 DataNode
+==================================================</pre></div></div>
+        <p>In a second terminal, confirm it responds:</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://localhost:5000/health</code></pre></div>
+        <h4>Run it in the background (so you can close the terminal)</h4>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;nohup python3 src/api.py &gt; /tmp/api.log 2&gt;&amp;1 &amp;&quot;,&quot;echo &quot;API PID: $!&quot;&quot;,&quot;# To stop it later:&quot;,&quot;# kill $(lsof -ti :5000)&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;nohup python3 src/api.py &gt; /tmp/api.log 2&gt;&amp;1 &amp;&quot;,&quot;echo &quot;API PID: $!&quot;&quot;,&quot;# To stop it later:&quot;,&quot;# kill $(lsof -ti :5000)&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# PowerShell -- start as a background job&quot;,&quot;Start-Job -ScriptBlock { python3 src/api.py } | Out-Null&quot;,&quot;Write-Host 'API started in background'&quot;,&quot;# To stop: Get-Job | Stop-Job&quot;</code></pre></div></div></div></section>
+<section id="s2-1"><h3><span class="sec-num">2.1</span>Before You Start</h3>
+        <p>The master node must be fully running before you set up any worker. Specifically:</p>
+        <ul>
+          <li>Section 1.3 must be complete — <code>jps</code> on the master shows all four processes.</li>
+          <li>You need the master's LAN IP address from Section 1.1.</li>
+          <li>Both machines must be on the same Wi-Fi or wired LAN.</li>
+        </ul>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -c 3 192.168.1.14&quot;,&quot;# All 3 packets should receive a reply.&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -c 3 192.168.1.14&quot;,&quot;# All 3 packets should receive a reply.&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -n 3 192.168.1.14&quot;,&quot;# All 3 packets should receive a reply.&quot;</code></pre></div></div></div></section>
+<section id="s2-2"><h3><span class="sec-num">2.2</span>Clone and Configure</h3>
+        <h4>Clone the repository on the worker machine</h4>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;git clone https://github.com/munimx/pagerank-cluster&quot;,&quot;cd pagerank-cluster&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;git clone https://github.com/munimx/pagerank-cluster&quot;,&quot;cd pagerank-cluster&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;git clone https://github.com/munimx/pagerank-cluster&quot;,&quot;cd pagerank-cluster&quot;</code></pre></div></div></div></section>
+<section id="s2-3"><h3><span class="sec-num">2.3</span>Run Worker Setup</h3>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/setup_node.py --role worker</code></pre></div>
+        <p>This installs Java, Python dependencies, Hadoop, and Spark — same as the master, but starts only the DataNode and Spark Worker daemons (not the NameNode or Spark Master).</p>
+        <h4>After it finishes: check with <code>jps</code></h4>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">jps</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output on the worker — exactly these two</strong><pre>23456 DataNode
 23457 Worker
-23458 Jps</pre><p>You should <strong>not</strong> see <code>NameNode</code> or <code>Master</code> on a worker &mdash; those only run on the master machine.</p></div></div></section><section id="s2-4"><h3><span class="sec-num">2.4</span>Register with Master</h3><p>The master needs to know this worker exists. This is a two-step handshake: the worker reports its IP, then the master adds it to the cluster roster.</p><h4>Step 1 &mdash; Find your own IP (on the worker machine)</h4><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ipconfig getifaddr en0</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hostname -I | awk '{print $1}'</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">(Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -like '192.168.*' }).IPAddress</code></pre></div></div></div><h4>Step 2 &mdash; Send your IP to the master operator</h4><p>Tell the person running the master laptop your IP (e.g., via Slack, Discord, or just say it out loud). They run this on the master:</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># On the MASTER machine -- replace with the worker's actual IP
-python3 setup/register_worker.py 192.168.1.55</code></pre></div><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/register_worker.py 192.168.1.55</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">python3 setup/register_worker.py 192.168.1.55</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">python setup/register_worker.py 192.168.1.55</code></pre></div></div></div><h4>Step 3 &mdash; Verify from the master</h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfsadmin -report | grep 'Live datanodes'</code></pre></div><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfsadmin -report | grep 'Live datanodes'</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">hdfs dfsadmin -report | grep 'Live datanodes'</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">hdfs dfsadmin -report | findstr "Live datanodes"</code></pre></div></div></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected output</strong><p><code>Live datanodes (2):</code> &mdash; the count increases by 1 each time a worker is registered. If you have 1 worker plus the master's own DataNode, you'll see 2.</p></div></div></section><section id="s2-5"><h3><span class="sec-num">2.5</span>Most Common Failures</h3><h4>Failure 1 &mdash; <code>MASTER_IP</code> mismatch</h4><p>The worker starts but never appears in the Spark UI or HDFS report.</p><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>What the error looks like in Spark Worker logs</strong><pre>ERROR Worker: All masters are unresponsive! Giving up.
-ERROR Worker: Connection to spark://192.168.1.99:7077 failed</pre></div></div><p><strong>Fix:</strong> Open <code>setup/config.py</code> on the <em>worker</em> machine and correct <code>MASTER_IP</code> to the master's actual LAN IP. Then re-run worker setup.</p><h4>Failure 2 &mdash; Worker can't reach master (firewall)</h4><p>Ping succeeds but Spark/HDFS connections time out.</p><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Option 1: Disable the firewall (simplest for a lab cluster):
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
-
-# Option 2: Allow Java through the firewall:
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/bin/java</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">sudo ufw allow 7077/tcp
-sudo ufw allow 9000/tcp
-sudo ufw allow 9866/tcp
-sudo ufw allow 9867/tcp
-sudo ufw allow 8080/tcp
-sudo ufw allow 9870/tcp</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell"># Run as Administrator:
-netsh advfirewall firewall add rule name="Hadoop-Spark Cluster" dir=in action=allow protocol=TCP localport=7077,9000,9866,9867,8080,9870</code></pre></div></div></div></section><div class="part-divider" id="part3"><div class="part-label">Part 3</div><div class="part-title">Portability Test</div></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:12px;">These instructions are for the group that is <strong>testing Group 03's output</strong>. Follow them from any machine on the same LAN as the Group 03 master.</p>
-<p>The portability test checks that your group's API can be queried by a <em>different</em> group's machine &mdash; confirming the result is not just local but genuinely accessible over the LAN. You are querying the Group 03 master node for the top-5 most influential pages in the Stanford Web-Google graph, as computed by our distributed PageRank job. The three endpoints below must all return valid JSON.</p><section id="s3-1"><h3><span class="sec-num">3.1</span>Check the Service Is Up</h3><p>Before querying results, confirm the API process is alive.</p><h4>Three ways to call <code>GET /health</code></h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl
+23458 Jps</pre>
+        <p>You should <strong>not</strong> see <code>NameNode</code> or <code>Master</code> on a worker — those only run on the master machine.</p></div></div>
+        </section>
+<section id="s2-4"><h3><span class="sec-num">2.4</span>Register with Master</h3>
+        <p>The master needs to know this worker exists. This is a two-step handshake: the worker reports its IP, then the master adds it to the cluster roster.</p>
+        <h4>Step 1 — Find your own IP (on the worker machine)</h4>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ipconfig getifaddr en0&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hdfs dfsadmin -report | grep 'Live datanodes'&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;hdfs dfsadmin -report | findstr &quot;Live datanodes&quot;&quot;</code></pre></div></div></div></section>
+<section id="s2-5"><h3><span class="sec-num">2.5</span>Most Common Failures</h3>
+        <h4>Failure 1 — <code>MASTER_IP</code> mismatch</h4>
+        <p>The worker starts but never appears in the Spark UI or HDFS report.</p>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>What the error looks like in Spark Worker logs</strong><pre>ERROR Worker: All masters are unresponsive! Giving up.
+ERROR Worker: Connection to spark://192.168.1.99:7077 failed</pre></div></div>
+        <p><strong>Fix:</strong> Open <code>setup/config.py</code> on the <em>worker</em> machine and correct <code>MASTER_IP</code> to the master's actual LAN IP. Then re-run worker setup.</p>
+        <h4>Failure 2 — Worker can't reach master (firewall)</h4>
+        <p>Ping succeeds but Spark/HDFS connections time out.</p>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Option 1: Disable the firewall (simplest for a lab cluster):&quot;,&quot;sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off&quot;,&quot;&quot;,&quot;# Option 2: Allow Java through the firewall:&quot;,&quot;sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/bin/java&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;sudo ufw allow 7077/tcp&quot;,&quot;sudo ufw allow 9000/tcp&quot;,&quot;sudo ufw allow 9866/tcp&quot;,&quot;sudo ufw allow 9867/tcp&quot;,&quot;sudo ufw allow 8080/tcp&quot;,&quot;sudo ufw allow 9870/tcp&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;# Run as Administrator:&quot;,&quot;netsh advfirewall firewall add rule name=&quot;Hadoop-Spark Cluster&quot; dir=in action=allow protocol=TCP localport=7077,9000,9866,9867,8080,9870&quot;</code></pre></div></div></div></section>
+<section id="s3-1"><h3><span class="sec-num">3.1</span>Check the Service Is Up</h3>
+        <p>Before querying results, confirm the API process is alive.</p>
+        <h4>Three ways to call <code>GET /health</code></h4>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl
 curl http://192.168.1.14:5000/health
 
 # Python
-python3 -c "import urllib.request, json; print(json.dumps(json.loads(urllib.request.urlopen('http://192.168.1.14:5000/health').read()), indent=2))"
+python3 -c &quot;import urllib.request, json; print(json.dumps(json.loads(urllib.request.urlopen('http://192.168.1.14:5000/health').read()), indent=2))&quot;
 
 # Browser
-# http://192.168.1.14:5000/health</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Healthy response</strong><pre>{
+# http://192.168.1.14:5000/health</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Healthy response</strong><pre>{
   "dataset": "Stanford Web-Google",
   "framework": "Apache Spark",
   "group": "03",
   "results_ready": true,
   "status": "ok",
   "task": "Network Graph PageRank"
-}</pre></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Failed / unexpected response</strong><p>If the connection is refused: the API process isn't running. Contact the Group 03 master operator to restart it (<code>python3 src/api.py &amp;</code>).</p><p>If you get a timeout: check network connectivity with <code>ping</code> first, then check firewall rules (Section 2.5).</p></div></div></section><section id="s3-2"><h3><span class="sec-num">3.2</span>Query the Top 5 Results</h3><p><code>GET /top5</code> returns the five highest-ranked nodes in the Web-Google graph.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl
+</div></div></pre>}
+        <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Failed / unexpected response</strong><p>If the connection is refused: the API process isn't running. Contact the Group 03 master operator to restart it (<code>python3 src/api.py &amp;</code>).</p>
+        <p>If you get a timeout: check network connectivity with <code>ping</code> first, then check firewall rules (Section 2.5).</p></div></div>
+        </section>
+<section id="s3-2"><h3><span class="sec-num">3.2</span>Query the Top 5 Results</h3>
+        <p><code>GET /top5</code> returns the five highest-ranked nodes in the Web-Google graph.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl
 curl http://192.168.1.14:5000/top5
 
 # Python urllib (no extra libraries needed)
-python3 -c "
+python3 -c &quot;
 import urllib.request, json
 data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/top5').read())
 for n in data:
     print(n['rank'], n['nodeId'], n['pagerank'])
-"
+&quot;
 
 # Browser
-# http://192.168.1.14:5000/top5</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected JSON response</strong><pre>[
+# http://192.168.1.14:5000/top5</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected JSON response</strong><pre>[
   {
     "rank": 1,
     "nodeId": "41909",
     "pagerank": 445.71778597
-  },
+  </div></div>,
   {
     "rank": 2,
     "nodeId": "597621",
@@ -424,62 +466,95 @@ for n in data:
     "nodeId": "537039",
     "pagerank": 383.9091255
   }
-]</pre></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>Scores may differ slightly</strong><p>PageRank scores depend on the number of iterations and the damping factor. Our run used 10 iterations and damping 0.85. Node IDs will match; the exact floating-point values may vary by &plusmn;0.001 if you re-run with different settings.</p></div></div></section><section id="s3-3"><h3><span class="sec-num">3.3</span>Query a Specific Node</h3><p><code>GET /node/&lt;id&gt;</code> returns the score for one node. Use the top-ranked node's ID as your test case.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl -- query the top node
+]</pre>}
+        <div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>Scores may differ slightly</strong>PageRank scores depend on the number of iterations and the damping factor. Our run used 10 iterations and damping 0.85. Node IDs will match; the exact floating-point values may vary by &plusmn;0.001 if you re-run with different settings.</div></div>
+        </section>
+<section id="s3-3"><h3><span class="sec-num">3.3</span>Query a Specific Node</h3>
+        <p><code>GET /node/&lt;id&gt;</code> returns the score for one node. Use the top-ranked node's ID as your test case.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># curl -- query the top node
 curl http://192.168.1.14:5000/node/41909
 
 # Python
-python3 -c "
+python3 -c &quot;
 import urllib.request, json
 data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/node/41909').read())
 print(json.dumps(data, indent=2))
-"</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected response</strong><pre>{
+&quot;</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Expected response</strong><pre>{
   "nodeId": "41909",
   "pagerank": 445.71778597
-}</pre></div></div></section><section id="s3-4"><h3><span class="sec-num">3.4</span>Top N Nodes</h3><p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get top 10 nodes
+</div></div></pre>}
+        </section>
+<section id="s3-4"><h3><span class="sec-num">3.4</span>Top N Nodes</h3>
+        <p><code>GET /top/&lt;n&gt;</code> returns the top <em>n</em> ranked nodes (capped at 1000, the size of the stored result set).</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get top 10 nodes
 curl http://192.168.1.14:5000/top/10
 
 # Get top 50 nodes
-curl http://192.168.1.14:5000/top/50</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
+curl http://192.168.1.14:5000/top/50</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
   "requested": 10,
   "returned": 10,
   "nodes": [
-    {"nodeId": "41909", "pagerank": 445.71778597},
+    {"nodeId": "41909", "pagerank": 445.71778597</div></div>,
     {"nodeId": "597621", "pagerank": 406.62836675},
     ...
   ]
-}</pre></div></div><h4>Edge cases</h4><ul><li><code>n &lt; 1</code> &rarr; returns <code>400</code> with error message.</li><li><code>n &gt; 1000</code> &rarr; returns all 1000 available nodes with a <code>note</code> field explaining the cap.</li></ul></section><section id="s3-5"><h3><span class="sec-num">3.5</span>Outgoing Edges (Neighbors)</h3><p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all outgoing neighbors of the top-ranked node
+}</pre>}
+        <h4>Edge cases</h4>
+        <ul>
+          <li><code>n &lt; 1</code> &rarr; returns <code>400</code> with error message.</li>
+          <li><code>n &gt; 1000</code> &rarr; returns all 1000 available nodes with a <code>note</code> field explaining the cap.</li>
+        </ul>
+        </section>
+<section id="s3-5"><h3><span class="sec-num">3.5</span>Outgoing Edges (Neighbors)</h3>
+        <p><code>GET /neighbors/&lt;node_id&gt;</code> returns every node that the given node links <em>to</em> (outgoing edges, i.e. the node's adjacency list).</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all outgoing neighbors of the top-ranked node
 curl http://192.168.1.14:5000/neighbors/41909
 
 # Python
-python3 -c "
+python3 -c &quot;
 import urllib.request, json
 data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/neighbors/41909').read())
 print(json.dumps(data, indent=2))
-"</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
+&quot;</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
   "nodeId": "41909",
   "direction": "outgoing",
   "count": 42,
   "neighbors": ["123", "456", "789", ...]
-}</pre></div></div><h4>Sink nodes</h4><p>Nodes with no outgoing edges (sink nodes) will return <code>404</code> with the message: <em>This may be a sink node (has no outgoing edges — it receives links but doesn't link to anything).</em> This is expected behaviour &mdash; sink nodes exist in the graph but have no entries in the adjacency list.</p></section><section id="s3-6"><h3><span class="sec-num">3.6</span>Incoming Edges (Influencers)</h3><p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). This is computed on first request by building a reverse-index from <code>data/graph.json</code>, then cached in memory for all subsequent calls &mdash; it does not rebuild on every request.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all nodes that link to the top-ranked node
+</div></div></pre>}
+        <h4>Sink nodes</h4>
+        <p>Nodes with no outgoing edges (sink nodes) will return <code>404</code> with the message: <em>This may be a sink node (has no outgoing edges — it receives links but doesn't link to anything).</em> This is expected behaviour — sink nodes exist in the graph but have no entries in the adjacency list.</p>
+        </section>
+<section id="s3-6"><h3><span class="sec-num">3.6</span>Incoming Edges (Influencers)</h3>
+        <p><code>GET /influencedby/&lt;node_id&gt;</code> returns every node that links <em>to</em> the given node (incoming edges). This is computed on first request by building a reverse-index from <code>data/graph.json</code>, then cached in memory for all subsequent calls — it does not rebuild on every request.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Get all nodes that link to the top-ranked node
 curl http://192.168.1.14:5000/influencedby/41909
 
 # Python
-python3 -c "
+python3 -c &quot;
 import urllib.request, json
 data = json.loads(urllib.request.urlopen('http://192.168.1.14:5000/influencedby/41909').read())
-print(f\"Node {data['nodeId']} is influenced by {data['count']} nodes\")
-"</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
+print(f&quot;Node {data['nodeId']</code></pre></div> is influenced by {data['count']} nodes")
+"}
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
   "nodeId": "41909",
   "direction": "incoming",
   "count": 18,
   "sources": ["789", "101", "202", ...]
-}</pre></div></div></section><section id="s3-7"><h3><span class="sec-num">3.7</span>Job Statistics</h3><p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/stats
+</div></div></pre>}
+        </section>
+<section id="s3-7"><h3><span class="sec-num">3.7</span>Job Statistics</h3>
+        <p><code>GET /stats</code> returns the job metadata recorded when <code>pagerank.py</code> finished, plus live service information.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/stats
 
 # Python
-python3 -c "
+python3 -c &quot;
 import urllib.request, json
 print(json.dumps(json.loads(urllib.request.urlopen('http://192.168.1.14:5000/stats').read()), indent=2))
-"</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
+&quot;</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Response format</strong><pre>{
   "dataset": "web-Google.txt",
   "total_nodes": 875713,
   "total_edges": 5105039,
@@ -489,10 +564,14 @@ print(json.dumps(json.loads(urllib.request.urlopen('http://192.168.1.14:5000/sta
   "completed_at": "2026-05-10T12:34:56+00:00",
   "api_status": "ok",
   "endpoints": ["/top5", "/top/<n>", "/node/<id>", "/neighbors/<id>", "/influencedby/<id>", "/stats", "/rerun", "/health"]
-}</pre></div></div></section><section id="s3-8"><h3><span class="sec-num">3.8</span>Background Rerun</h3><p><code>POST /rerun</code> triggers a PageRank rerun in the background. It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Rerun with more iterations
+</div></div></pre>}
+        </section>
+<section id="s3-8"><h3><span class="sec-num">3.8</span>Background Rerun</h3>
+        <p><code>POST /rerun</code> triggers a PageRank rerun in the background. It accepts optional parameters to change the iteration count, damping factor, or swap to an entirely different dataset from SNAP.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash"># Rerun with more iterations
 curl -X POST http://192.168.1.14:5000/rerun \
   -H 'Content-Type: application/json' \
-  -d '{"iterations": 15}'
+  -d '{&quot;iterations&quot;: 15</code></pre></div>'
 
 # Rerun with different damping factor
 curl -X POST http://192.168.1.14:5000/rerun \
@@ -507,12 +586,16 @@ curl -X POST http://192.168.1.14:5000/rerun \
 # Combine all parameters
 curl -X POST http://192.168.1.14:5000/rerun \
   -H 'Content-Type: application/json' \
-  -d '{"iterations": 20, "damping_factor": 0.88, "dataset_url": "https://snap.stanford.edu/data/web-Google.txt.gz"}'</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Immediate response (202 Accepted)</strong><pre>{
+  -d '{"iterations": 20, "damping_factor": 0.88, "dataset_url": "https://snap.stanford.edu/data/web-Google.txt.gz"}'}
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Immediate response (202 Accepted)</strong><pre>{
   "job_id": "rerun_1746861234",
   "status": "queued",
-  "params": {"iterations": 15}
-}</pre></div></div><h4>Check job status</h4><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/rerun/status</code></pre></div><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Status responses</strong><pre>// idle (no rerun ever triggered)
-{"status": "idle"}
+  "params": {"iterations": 15</div></div>
+}</pre>}
+        <h4>Check job status</h4>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">curl http://192.168.1.14:5000/rerun/status</code></pre></div>
+        <div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>Status responses</strong><pre>// idle (no rerun ever triggered)
+{"status": "idle"</div></div>
 
 // running
 {"status": "running", "job_id": "rerun_1746861234", "started_at": "2026-05-10T12:00:00+00:00", ...}
@@ -521,7 +604,16 @@ curl -X POST http://192.168.1.14:5000/rerun \
 {"status": "completed", "job_id": "rerun_1746861234", "completed_at": "2026-05-10T12:02:45+00:00", ...}
 
 // failed
-{"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre></div></div><div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Dataset swap requires a SNAP URL</strong><p>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from <code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS so it is available to all cluster nodes.</p></div></div><div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>The API stays responsive during a rerun</strong><p>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> results until the new job completes. When the job finishes, the API updates all result files and future queries return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</p></div></div></section><section id="s3-9"><h3><span class="sec-num">3.9</span>If Something Fails</h3><h4>API unreachable (connection refused / timeout)</h4><p>Step 1: confirm basic network connectivity first.</p><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div><div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">macOS</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-powershell">ping -n 4 192.168.1.14</code></pre></div></div></div><p>If ping fails, you are on different networks. If ping succeeds but the API is still unreachable, the firewall is blocking port 5000. Apply the firewall rules from Section 2.5 on the <strong>master</strong> machine.</p><h4>503 response &mdash; results not ready</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>503 response body</strong><pre>{"error": "Results not ready. Run src/pagerank.py first."}</pre><p>The PageRank job has not finished yet (or has not been run at all). Contact the Group 03 master operator. Do not mark the portability test as failed immediately &mdash; the job takes approximately 2 minutes to complete.</p></div></div><h4>404 on a node ID</h4><div class="callout callout-ok"><span class="callout-icon">&#10003;</span><div><strong>404 response body</strong><pre>{"error": "Node '999999' not in top-1000 results."}</pre><p>The API only stores the top 1000 nodes by PageRank score. A 404 for a node ID that is not in the top 1000 is expected and correct behaviour &mdash; it does not indicate a bug.</p></div></div></section></div>
+{"status": "failed", "job_id": "rerun_1746861234", "error": "..."}</pre>}
+        <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div><strong>Dataset swap requires a SNAP URL</strong>When <code>dataset_url</code> is provided, the API downloads the file, places it in HDFS, updates the metadata, then runs <code>pagerank.py</code>. The URL must point to a gzipped SNAP graph file (e.g. from <code>https://snap.stanford.edu/data/</code>). The file is downloaded locally, extracted, then pushed to HDFS so it is available to all cluster nodes.</div></div>
+        <div class="callout callout-tip"><span class="callout-icon">&#128161;</span><div><strong>The API stays responsive during a rerun</strong>The rerun happens in a background thread. The API continues to serve requests using the <em>previous</em> results until the new job completes. When the job finishes, the API updates all result files and future queries return the new results. The reverse-index cache is also invalidated so <code>/influencedby</code> reflects the new graph.</div></div>
+        </section>
+<section id="s3-9"><h3><span class="sec-num">3.9</span>If Something Fails</h3>
+        <h4>API unreachable (connection refused / timeout)</h4>
+        <p>Step 1: confirm basic network connectivity first.</p>
+        <div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">ping -c 4 192.168.1.14</code></pre></div>
+        <div class="os-tabs"><div class="os-tab-bar" role="tablist"><button class="os-tab" role="tab" data-os="macos">Macos</button><button class="os-tab" role="tab" data-os="linux">Linux</button><button class="os-tab" role="tab" data-os="windows">Windows</button></div><div class="os-pane" data-os="macos"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -c 4 192.168.1.14&quot;</code></pre></div></div><div class="os-pane" data-os="linux"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -c 4 192.168.1.14&quot;</code></pre></div></div><div class="os-pane" data-os="windows"><div class="code-wrap"><button class="copy-btn" aria-label="Copy code">Copy</button><pre><code class="lang-bash">&quot;ping -n 4 192.168.1.14&quot;</code></pre></div></div></div></section>
+</div>
 <footer>Group 03 &mdash; CSCS2543 &mdash; Section H3 &mdash; May 11, 2026</footer>
 </main>
 </div>
@@ -554,7 +646,7 @@ function initCopyButtons() {
         document.body.appendChild(ta); ta.select(); document.execCommand('copy');
         document.body.removeChild(ta);
       }
-      btn.textContent = '✓ Copied';
+      btn.textContent = '\u2713 Copied';
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
     });
